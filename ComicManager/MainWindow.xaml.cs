@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.WindowsAPICodePack.Dialogs;
+using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows;
@@ -24,12 +25,8 @@ namespace ComicManager
             InitializeComponent();
             viewModel = (App.Current as App).MainViewModel;
             this.DataContext = viewModel;
-
-            GetFilesList getFiles = new GetFilesList();
-            getFiles.FilesList();
         }
         MainViewModel viewModel;
-
         private void FileName_Click(object sender, RoutedEventArgs e)
         {
 
@@ -39,14 +36,27 @@ namespace ComicManager
         {
             if(isOrderBy)
             {
-                ObservableCollection<FilesListClass> OrderBy = new ObservableCollection<FilesListClass>(viewModel.FilesList.OrderBy(x => x.dateTime).OrderBy(x => x.fileName));
+                ObservableCollection<FilesListClass> OrderBy = new ObservableCollection<FilesListClass>(viewModel.FilesList.OrderBy(x => x.dateTime));
                 viewModel.FilesList = OrderBy;
                 isOrderBy = false;
             }else
             {
-                ObservableCollection<FilesListClass> OrderBy = new ObservableCollection<FilesListClass>(viewModel.FilesList.OrderByDescending(x => x.dateTime).OrderByDescending(x => x.fileName));
+                ObservableCollection<FilesListClass> OrderBy = new ObservableCollection<FilesListClass>(viewModel.FilesList.OrderByDescending(x => x.dateTime));
                 viewModel.FilesList = OrderBy;
                 isOrderBy = true;
+            }
+        }
+
+        private void FolderOpen_Click(object sender, RoutedEventArgs e)
+        {
+            using (var dlg = new CommonOpenFileDialog())
+            {
+                dlg.IsFolderPicker = true;
+
+                if(dlg.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    viewModel.Path = dlg.FileName;
+                }
             }
         }
     }

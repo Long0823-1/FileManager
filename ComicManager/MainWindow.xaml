@@ -5,13 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ComicManager"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="506" Width="800">
     <Grid>
         <!-- Define Grid Rows and Columns -->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <!-- For Search Bar -->
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="409*"/>
+            <RowDefinition Height="31*"/>
             <!-- For Content -->
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -26,12 +27,12 @@
                  Margin="10,10,10,10" Height="30" Text="Search..."/>
 
         <!-- Comic Cover Image Placeholder -->
-        <Border Grid.Row="1" Grid.Column="0" Margin="10,10,10,10" Background="LightGray">
+        <Border Grid.Row="1" Grid.Column="0" Margin="10,10,10,3" Background="LightGray">
             <Image  Source="{Binding CoverImage}"/>
         </Border>
 
         <!-- File ListView -->
-        <ListView Grid.Row="1" Grid.Column="1" Margin="10,10,10,10" Background="LightGray" ItemsSource="{Binding FilesList}" >
+        <ListView Grid.Row="1" Grid.Column="1" Margin="10,10,10,3" Background="LightGray" ItemsSource="{Binding FilesList}" >
             <ListView.View>
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding fileName}">
@@ -46,6 +47,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Label Content="{Binding Path}" Margin="260,10,10,10" Grid.ColumnSpan="2"/>
+        <Label Content="{Binding Path}" Margin="10,10,10,10" Grid.Column="1"/>
+        <Button Grid.Column="1" Content="開く" Margin="0,6,10,5" Grid.Row="2" Click="FolderOpen_Click" HorizontalAlignment="Right" Width="40"/>
     </Grid>
 </Window>

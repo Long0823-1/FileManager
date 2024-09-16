@@ -18,7 +18,7 @@ namespace ComicManager
                 extractor.ExtractArchiveAsync(CatchePath + @$"\{Path.GetFileNameWithoutExtension(path)}");
             }
         }
-        public string GetThumb()
+        public void GetThumb()
         {
 
         }

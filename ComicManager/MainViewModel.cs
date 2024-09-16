@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
+using System.Windows.Documents;
 
 namespace ComicManager
 {
@@ -31,7 +33,12 @@ namespace ComicManager
         private string _Path = @"C:\";
         public string Path
         {
-            get => _Path;
+            get 
+            {
+                GetFilesList getFiles = new GetFilesList();
+                getFiles.FilesList(_Path);
+                return _Path;
+            }
             set=>SetProperty(ref  _Path, value,nameof(Path));   
         }
 
