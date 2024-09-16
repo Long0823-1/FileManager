@@ -13,6 +13,15 @@ namespace ComicManager
         {
 
         }
+
+        public class FilesListClass()
+        {
+            public string filePath {  get; set; }
+            public string fileName { get; set; }
+            public string maxBytes {  get; set; }
+            public string dateTime { get; set; }
+        }
+
         private string _CoverImage = string.Empty;
         public string CoverImage
         {
@@ -26,8 +35,8 @@ namespace ComicManager
             set=>SetProperty(ref  _Path, value,nameof(Path));   
         }
 
-        private ObservableCollection<string> _FilesList;
-        public ObservableCollection<string> FilesList
+        private ObservableCollection<FilesListClass> _FilesList;
+        public ObservableCollection<FilesListClass> FilesList
         {
             get => _FilesList;
             set=> SetProperty(ref _FilesList, value,nameof(FilesList));

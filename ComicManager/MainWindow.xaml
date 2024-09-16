@@ -15,9 +15,9 @@
             <!-- For Content -->
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="283.938294010889"/>
             <!-- For Image -->
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition/>
             <!-- For ListView -->
         </Grid.ColumnDefinitions>
 
@@ -26,13 +26,26 @@
                  Margin="10,10,10,10" Height="30" Text="Search..."/>
 
         <!-- Comic Cover Image Placeholder -->
-        <Border Grid.Row="1" Grid.Column="0" Margin="10" Background="LightGray">
+        <Border Grid.Row="1" Grid.Column="0" Margin="10,10,10,10" Background="LightGray">
             <Image  Source="{Binding CoverImage}"/>
         </Border>
 
         <!-- File ListView -->
-        <ListView Grid.Row="1" Grid.Column="1" Margin="10" Background="LightGray" ItemsSource="{Binding FilesList}">
+        <ListView Grid.Row="1" Grid.Column="1" Margin="10,10,10,10" Background="LightGray" ItemsSource="{Binding FilesList}" >
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding fileName}">
+                        <GridViewColumnHeader Content="FileName" Click="FileName_Click">
+                        </GridViewColumnHeader>
+                    </GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding dateTime}" >
+                        <GridViewColumnHeader Content="CreateTime" Click="CreateTime_Click"/>
+                    </GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding filePath}" Header="FilePath"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding maxBytes}" Header="Bytes" />
+                </GridView>
+            </ListView.View>
         </ListView>
-        <Label Grid.Column="1" Content="{Binding Path}" Margin="10,10,10,10"/>
+        <Label Content="{Binding Path}" Margin="260,10,10,10" Grid.ColumnSpan="2"/>
     </Grid>
 </Window>
