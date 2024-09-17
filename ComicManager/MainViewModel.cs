@@ -24,7 +24,7 @@ namespace ComicManager
             public string dateTime { get; set; }
         }
 
-        private string _CoverImage = string.Empty;
+        private string _CoverImage = @"images\none.png";
         public string CoverImage
         {
             get => _CoverImage;

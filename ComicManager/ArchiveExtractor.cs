@@ -62,6 +62,7 @@ namespace ComicManager
                         using (FileStream fs = new FileStream(outputFile,FileMode.Create))
                         {
                             extractor.ExtractFile(result, fs);
+                            fs.Close();
                         }
                         
                         return outputFile;

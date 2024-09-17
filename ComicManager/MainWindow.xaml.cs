@@ -10,8 +10,8 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.IO;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using static ComicManager.MainViewModel;
 
 namespace ComicManager
@@ -84,6 +84,26 @@ namespace ComicManager
             }
             finally
             {
+            }
+
+        }
+
+        private async void LeftStr_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string fileNameOnly = strEntry.Text + Path.GetFileName(filePath);
+                string Directory = Path.GetDirectoryName(filePath);
+                string newerPath = Path.Combine(Directory, fileNameOnly);
+
+                File.Move(filePath, newerPath);
+
+                GetFilesList getFilesList = new GetFilesList();
+                await getFilesList.FilesList(viewModel.Path);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
             }
 
         }
