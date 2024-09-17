@@ -1,6 +1,7 @@
 ﻿using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,12 +26,16 @@ namespace ComicManager
             InitializeComponent();
             viewModel = (App.Current as App).MainViewModel;
             this.DataContext = viewModel;
+            extractor = new ArchiveExtractor();
         }
         MainViewModel viewModel;
+        ArchiveExtractor extractor;
+
         private void FileName_Click(object sender, RoutedEventArgs e)
         {
 
         }
+
         bool isOrderBy = true;
         private void CreateTime_Click(object sender, RoutedEventArgs e)
         {
@@ -58,6 +63,29 @@ namespace ComicManager
                     viewModel.Path = dlg.FileName;
                 }
             }
+        }
+
+        private string filePath;
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                if((((sender as ListView).SelectedItem) as FilesListClass) != null)
+                {
+                    filePath = (((sender as ListView).SelectedItem) as FilesListClass).filePath;
+                    extractor.GetThumb(filePath);
+
+                    Debug.WriteLine(filePath);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+            }
+
         }
     }
 }

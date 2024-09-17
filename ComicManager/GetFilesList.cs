@@ -21,7 +21,7 @@ namespace ComicManager
                 var files = Directory.GetFileSystemEntries(path);
                 foreach (var file in files)
                 {
-                    tempList.Add(new FilesListClass { filePath = file, fileName = Path.GetFileName(file), dateTime = File.GetCreationTime(file).ToString("yyyy/MM/dd（dddd）") });
+                    tempList.Add(new FilesListClass { filePath = file, fileName = Path.GetFileName(file), dateTime = File.GetCreationTime(file).ToString("yyyy/MM/dd（dddd）"),maxBytes ="" });
                 }
                 ObservableCollection<FilesListClass> orderedByTime = new ObservableCollection<FilesListClass>(tempList.OrderByDescending(x => x.dateTime));
                 vm.FilesList = orderedByTime;
