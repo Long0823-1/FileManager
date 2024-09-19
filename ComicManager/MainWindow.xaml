@@ -38,7 +38,7 @@
             Grid.Column="0"
             Margin="10,10,10,10"
             Background="LightGray">
-            <Image Source="{Binding CoverImage}" Margin="0,0,0,-1" />
+            <Image Source="{Binding CoverImage}" Margin="0,0,0,-1" x:Name="Cover"/>
         </Border>
 
         <!--  File ListView  -->
@@ -47,6 +47,7 @@
             Grid.Column="1"
             Margin="10,10,11,10"
             Background="LightGray"
+            x:Name="FilesListView"
             ItemsSource="{Binding FilesList}"
             SelectionChanged="ListView_SelectionChanged"
             SelectionMode="Extended">
@@ -82,7 +83,7 @@
             <StackPanel>
                 <Button Padding="5" Margin="10 10 10 10" Content="指定した文字列を左に挿入" Click="LeftStr_Click"/>
                 <Button Padding="5" Margin="10 10 10 10" Content="指定した文字列を右に挿入"/>
-                <Button Padding="5" Margin="10 10 10 10" Content="指定した文字列を削除"/>
+                <Button Padding="5" Margin="10 10 10 10" Content="指定した文字列を削除" Click="DeleteStr_Click"/>
                 <TextBox x:Name="strEntry" FontSize="18" Text="文字列を追加" Margin="10 10 10 10" Height="30"></TextBox>
             </StackPanel>
         </GroupBox>

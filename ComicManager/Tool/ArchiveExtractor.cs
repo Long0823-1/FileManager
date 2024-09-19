@@ -48,9 +48,10 @@ namespace ComicManager
             try
             {
                 SevenZipBase.SetLibraryPath(@"C:\Program Files\7-Zip\7z.dll");
+
                 using (var extractor = new SevenZipExtractor(path))
                 {
-                    if(extractor.ArchiveFileData.Count > 0)
+                    if (extractor.ArchiveFileData.Count > 0)
                     {
                         // ファイルかどうかを再帰的にチェック
                         var result = FileExists(extractor);
@@ -79,6 +80,10 @@ namespace ComicManager
                 Debug.WriteLine(ex);
                 return path;
             }
+            finally
+            {
+                GC.Collect();
+            }
 
             return "謎エラー";
             
@@ -87,7 +92,8 @@ namespace ComicManager
         {
             try
             {
-                vm.CoverImage = ExtractArchive(filePath); // アーカイブファイルを解凍する
+                string result = ExtractArchive(filePath);
+                vm.CoverImage = MainViewModel.LoadImage(result); // アーカイブファイルを解凍する
             }
             catch (Exception ex)
             {
