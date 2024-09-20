@@ -57,7 +57,7 @@ namespace ComicManager
             {
                 GetFilesList getFiles = new GetFilesList();
                 getFiles.FilesList(_Path);
-                _PathSplit = _Path.Split(@"\");
+                //_PathSplit = _Path.Split(@"\");
 
                 return _Path;
             }

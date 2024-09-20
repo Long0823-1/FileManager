@@ -15,7 +15,6 @@ namespace ComicManager
         {
             await Task.Run(() =>
             {
-                vm.Path = path;
                 ObservableCollection<FilesListClass> tempList = new ObservableCollection<FilesListClass>();
 
                 var files = Directory.GetFileSystemEntries(path);
@@ -24,9 +23,9 @@ namespace ComicManager
                 {
                     tempList.Add(new FilesListClass { filePath = file, fileName = Path.GetFileName(file), dateTime = File.GetCreationTime(file).ToString("yyyy/MM/dd（dddd）"),maxBytes ="" });
                 }
-                ObservableCollection<FilesListClass> orderedByTime = new ObservableCollection<FilesListClass>(tempList.OrderByDescending(x => x.dateTime));
-                orderedByTime.Insert(0,(new() { fileName = @"\..", filePath = @"\.." }));
-                vm.FilesList = orderedByTime;
+                ObservableCollection<FilesListClass> orderBy = new ObservableCollection<FilesListClass>(tempList.OrderBy(x => x.filePath));
+                orderBy.Insert(0,(new() { fileName = @"\..", filePath = @"\.." }));
+                vm.FilesList = orderBy;
             });
 
         }
