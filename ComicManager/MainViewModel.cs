@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 
 namespace ComicManager
@@ -69,5 +70,7 @@ namespace ComicManager
             get => _FilesList;
             set=> SetProperty(ref _FilesList, value,nameof(FilesList));
         }
+
+       // private string OrderByMode = 
     }
 }

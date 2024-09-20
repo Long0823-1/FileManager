@@ -18,7 +18,7 @@
             <!--  For Content  -->
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="363" />
+            <ColumnDefinition Width="380*" />
             <!--  For Image  -->
             <ColumnDefinition Width="300*" />
             <ColumnDefinition Width="137*" />
@@ -38,23 +38,28 @@
             Grid.Column="0"
             Margin="10,10,10,10"
             Background="LightGray">
-            <Image Source="{Binding CoverImage}" Margin="0,0,0,-1" x:Name="Cover"/>
+            <Image
+                x:Name="Cover"
+                Margin="0,0,0,-1"
+                Source="{Binding CoverImage}" />
         </Border>
 
         <!--  File ListView  -->
         <ListView
+            x:Name="FilesListView"
+            PreviewMouseDoubleClick="FilesListView_PreviewMouseDoubleClick"
+            MouseDoubleClick="FilesListView_MouseDoubleClick"
             Grid.Row="1"
             Grid.Column="1"
             Margin="10,10,11,10"
             Background="LightGray"
-            x:Name="FilesListView"
             ItemsSource="{Binding FilesList}"
             SelectionChanged="ListView_SelectionChanged"
             SelectionMode="Extended">
             <ListView.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="開く" />
-                    <MenuItem Header="削除" />
+                    <MenuItem Header="開く" Click="Open_Click"/>
+                    <MenuItem Header="削除" Click="Delete_Click"/>
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>
@@ -76,15 +81,49 @@
             Content="{Binding Path}" />
         <Button
             Grid.Column="2"
-            Margin="10,20,10,10"
+            Margin="3,9,3,9"
             Click="FolderOpen_Click"
             Content="開く" />
-        <GroupBox Header="リネーム" Grid.Column="2" Margin="10,12,10,10" Grid.Row="1">
+        <GroupBox
+            Grid.Row="1"
+            Grid.Column="2"
+            Margin="10,12,10,10"
+            Header="リネーム">
             <StackPanel>
-                <Button Padding="5" Margin="10 10 10 10" Content="指定した文字列を左に挿入" Click="LeftStr_Click"/>
-                <Button Padding="5" Margin="10 10 10 10" Content="指定した文字列を右に挿入"/>
-                <Button Padding="5" Margin="10 10 10 10" Content="指定した文字列を削除" Click="DeleteStr_Click"/>
-                <TextBox x:Name="strEntry" FontSize="18" Text="文字列を追加" Margin="10 10 10 10" Height="30"></TextBox>
+                <Button
+                    Margin="10,10,10,10"
+                    Padding="5"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Click="LeftStr_Click"
+                    Content="指定した文字列を&#xa;左に挿入" />
+                <Button
+                    Margin="10,10,10,10"
+                    Padding="5"
+                    Content="指定した文字列を&#xa;右に挿入" />
+                <Button
+                    Margin="10,10,10,10"
+                    Padding="5"
+                    Click="DeleteStr_Click"
+                    Content="指定した文字列を&#xa;削除" />
+                <Button
+                    Margin="10,10,10,10"
+                    Padding="5"
+                    Click="ExchangeStr_Click"
+                    Content="指定した文字列と&#xa;置き換える" />
+                <TextBox
+                    x:Name="strEntry"
+                    Height="20"
+                    Margin="10,10,10,10"
+                    FontSize="10"
+                    Text="置き換え前の文字列を追加" />
+                <Label HorizontalAlignment="Center" Content="↓" />
+                <TextBox
+                    x:Name="ExchangeStrEntry"
+                    Height="20"
+                    Margin="10,10,10,10"
+                    FontSize="10"
+                    Text="置き換え後の文字列を追加" />
             </StackPanel>
         </GroupBox>
     </Grid>

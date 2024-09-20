@@ -26,9 +26,21 @@ namespace ComicManager
         MainViewModel viewModel;
         ArchiveExtractor extractor;
 
+        bool isOrderByName = true;
         private void FileName_Click(object sender, RoutedEventArgs e)
         {
-
+            if (isOrderByName)
+            {
+                ObservableCollection<FilesListClass> OrderBy = new ObservableCollection<FilesListClass>(viewModel.FilesList.OrderBy(x => x.filePath));
+                viewModel.FilesList = OrderBy;
+                isOrderByName = false;
+            }
+            else
+            {
+                ObservableCollection<FilesListClass> OrderBy = new ObservableCollection<FilesListClass>(viewModel.FilesList.OrderByDescending(x => x.filePath));
+                viewModel.FilesList = OrderBy;
+                isOrderByName = true;
+            }
         }
 
         bool isOrderBy = true;
@@ -74,10 +86,7 @@ namespace ComicManager
                     Debug.WriteLine(filePath);
                 }
             }
-            catch (Exception)
-            {
-
-            }
+            catch (Exception) { }
             finally
             {
             }
@@ -91,7 +100,27 @@ namespace ComicManager
             {
                 RenameFile renameFile = new RenameFile();
                 
-                await renameFile.LeftAddStr(FilesListView.SelectedItems,strEntry.Text);
+                renameFile.LeftAddStr(FilesListView.SelectedItems,strEntry.Text);
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
+            finally
+            {
+                GetFilesList getFilesList = new GetFilesList();
+                await getFilesList.FilesList(viewModel.Path);
+            }
+
+        }
+        private async void ExchangeStr_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                RenameFile renameFile = new RenameFile();
+
+                renameFile.ExchangeStr(FilesListView.SelectedItems, strEntry.Text, ExchangeStrEntry.Text);
 
             }
             catch (Exception ex)
@@ -106,13 +135,13 @@ namespace ComicManager
 
         }
 
-        
+
         private async void DeleteStr_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 RenameFile renameFile = new RenameFile();
-                await renameFile.DeleteStr(FilesListView.SelectedItems, strEntry.Text);
+                renameFile.DeleteStr(FilesListView.SelectedItems, strEntry.Text);
             }
             catch (Exception ex)
             {
@@ -122,6 +151,62 @@ namespace ComicManager
             {
                 GetFilesList getFilesList = new GetFilesList();
                 await getFilesList.FilesList(viewModel.Path);
+            }
+        }
+
+        private void FilesListView_PreviewMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Debug.WriteLine("Preview");
+            if(Path.HasExtension(filePath))
+            {
+                FileOpen();
+            }
+            else
+            {
+                if(filePath == "\\..")
+                {
+                    viewModel.Path = viewModel.Path + filePath;
+                }else
+                {
+                    viewModel.Path = filePath;
+                }
+            }
+        }
+
+        private void FileOpen()
+        {
+            var startInfo = new System.Diagnostics.ProcessStartInfo()
+            {
+                FileName = filePath,
+                UseShellExecute = true,
+                CreateNoWindow = true,
+            };
+            System.Diagnostics.Process.Start(startInfo);
+        }
+
+        private void FilesListView_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            //Debug.WriteLine("double");
+        }
+
+        private void Open_Click(object sender, RoutedEventArgs e)
+        {
+            FileOpen();
+        }
+
+        private void Delete_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                File.Delete(filePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error", $"エラーが発生しました\n{ex.Message}");
+            }
+            finally
+            {
+                viewModel.Path = viewModel.Path;
             }
         }
     }
