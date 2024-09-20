@@ -84,13 +84,14 @@ namespace ComicManager
 
         }
 
-        private string renameSuccess = string.Empty;
-        private string renameError = string.Empty;
+
         private async void LeftStr_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                await LeftAddStr();
+                RenameFile renameFile = new RenameFile();
+                
+                await renameFile.LeftAddStr(FilesListView.SelectedItems,strEntry.Text);
 
             }
             catch (Exception ex)
@@ -105,83 +106,13 @@ namespace ComicManager
 
         }
 
-        private async Task LeftAddStr()
-        {
-            if (FilesListView.SelectedItems.Count > 0)
-            {
-                bool renameResult = false;
-                string newerName = string.Empty;
-                string filePath = string.Empty;
-                RenameFile rename = new RenameFile();
-
-                foreach (var item in FilesListView.SelectedItems)
-                {
-                    filePath = (item as FilesListClass).filePath;
-                    newerName = strEntry.Text + Path.GetFileName(filePath);
-
-                    renameResult = await rename.RenameMethod(filePath, newerName);
-                    if (renameResult)
-                    {
-                        renameSuccess += newerName + "\n";
-                        //MessageBox.Show($"リネームに成功しました！\n{newerName}", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                    else
-                    {
-                        renameError += newerName + "\n";
-                        //MessageBox.Show($"リネームに失敗しました\n{newerName}", "Information", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                }
-                if (renameSuccess != string.Empty)
-                {
-                    MessageBox.Show($"リネームに成功しました！\n{renameSuccess}", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else if (renameError != string.Empty) 
-                {
-                    MessageBox.Show($"リネームに失敗しました\n{renameError}", "Information", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-        }
-        private async Task DeleteStr()
-        {
-            if (FilesListView.SelectedItems.Count > 0)
-            {
-                bool renameResult = false;
-                string newerName = string.Empty;
-                string filePath = string.Empty;
-                RenameFile rename = new RenameFile();
-
-                foreach (var item in FilesListView.SelectedItems)
-                {
-                    filePath = (item as FilesListClass).filePath;
-
-                    // リプレースで対象の文字列を消す
-                    newerName = Path.GetFileName(filePath).Replace(strEntry.Text, "");
-
-                    renameResult = await rename.RenameMethod(filePath, newerName);
-                    if (renameResult)
-                    {
-                        renameSuccess += newerName + "\n";
-                    }
-                    else
-                    {
-                        renameError += newerName + "\n";
-                    }
-                }
-                if (renameSuccess != string.Empty)
-                {
-                    MessageBox.Show($"リネームに成功しました！\n{renameSuccess}", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else if (renameError != string.Empty)
-                {
-                    MessageBox.Show($"リネームに失敗しました\n{renameError}", "Information", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-        }
+        
         private async void DeleteStr_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-               await DeleteStr();
+                RenameFile renameFile = new RenameFile();
+                await renameFile.DeleteStr(FilesListView.SelectedItems, strEntry.Text);
             }
             catch (Exception ex)
             {
