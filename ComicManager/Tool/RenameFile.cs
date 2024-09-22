@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using Microsoft.VisualBasic.FileIO;
-using System.Diagnostics;
+﻿using Microsoft.VisualBasic.FileIO;
 using System.Collections;
-using static ComicManager.MainViewModel;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
+using static ComicManager.MainViewModel;
 
 namespace ComicManager.Tool
 {
     public class RenameFile
     {
-        public RenameFile() 
+        public RenameFile()
         {
             _vm = (App.Current as App).MainViewModel;
         }
@@ -23,10 +18,11 @@ namespace ComicManager.Tool
         private string renameSuccess = string.Empty;
         private string renameError = string.Empty;
 
-        public bool RenameMethod(string filePath,string newerName)
+        public bool RenameMethod(string filePath, string newerName)
         {
             try
             {
+                _vm.loadingFileName = filePath;
                 FileSystem.RenameFile(filePath, newerName);
             }
             catch (Exception ex)
@@ -38,112 +34,154 @@ namespace ComicManager.Tool
             return true;
 
         }
-
-        public void LeftAddStr(IList FilesListView,string str)
+        public async void LeftAddStr(IList FilesListView, string str)
         {
-            if (FilesListView.Count > 0)
+            Loading loading = new Loading();
+            loading.Show();
+            var result = await Task.Run(() =>
             {
-                bool renameResult = false;
-                string newerName = string.Empty;
-                string filePath = string.Empty;
-                RenameFile rename = new RenameFile();
-
-                foreach (var item in FilesListView)
+                if (FilesListView.Count > 0)
                 {
-                    filePath = (item as FilesListClass).filePath;
-                    newerName = str + Path.GetFileName(filePath);
+                    bool renameResult = false;
+                    string newerName = string.Empty;
+                    string filePath = string.Empty;
+                    RenameFile rename = new RenameFile();
 
-                    renameResult = rename.RenameMethod(filePath, newerName);
-                    if (renameResult)
+                    foreach (var item in FilesListView)
                     {
-                        renameSuccess += newerName + "\n";
-                        //MessageBox.Show($"リネームに成功しました！\n{newerName}", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                    else
-                    {
-                        renameError += newerName + "\n";
-                        //MessageBox.Show($"リネームに失敗しました\n{newerName}", "Information", MessageBoxButton.OK, MessageBoxImage.Error);
+                        filePath = (item as FilesListClass).filePath;
+                        newerName = str + Path.GetFileName(filePath);
+                        _vm.loadingFileName = "変換中：" + newerName;
+
+                        renameResult = rename.RenameMethod(filePath, newerName);
+                        if (renameResult)
+                        {
+                            renameSuccess += newerName + "\n";
+                            //MessageBox.Show($"リネームに成功しました！\n{newerName}", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                        else
+                        {
+                            renameError += newerName + "\n";
+                            //MessageBox.Show($"リネームに失敗しました\n{newerName}", "Information", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                     }
                 }
+                return true;
+            });
+
+            if (result)
+            {
+                loading.Close();
                 ResultMessage(); // 結果を表示
             }
         }
-        public void DeleteStr(IList FilesListView, string str)
+        public async void DeleteStr(IList FilesListView, string str)
         {
-            if (FilesListView.Count > 0)
+            Loading loading = new Loading();
+            loading.Show();
+
+            var result = await Task.Run(() =>
             {
-                bool renameResult = false;
-                string newerName = string.Empty;
-                string filePath = string.Empty;
-                RenameFile rename = new RenameFile();
-
-                foreach (var item in FilesListView)
+                if (FilesListView.Count > 0)
                 {
-                    filePath = (item as FilesListClass).filePath;
+                    bool renameResult = false;
+                    string newerName = string.Empty;
+                    string filePath = string.Empty;
+                    RenameFile rename = new RenameFile();
 
-                    // リプレースで対象の文字列を消す
-                    newerName = Path.GetFileName(filePath).Replace(str, "");
+                    foreach (var item in FilesListView)
+                    {
+                        filePath = (item as FilesListClass).filePath;
 
-                    renameResult = rename.RenameMethod(filePath, newerName);
-                    if (renameResult)
-                    {
-                        renameSuccess += newerName + "\n";
-                    }
-                    else
-                    {
-                        renameError += newerName + "\n";
+                        // リプレースで対象の文字列を消す
+                        newerName = Path.GetFileName(filePath).Replace(str, "");
+                        _vm.loadingFileName = "変換中：" + newerName;
+
+                        renameResult = rename.RenameMethod(filePath, newerName);
+                        if (renameResult)
+                        {
+                            renameSuccess += newerName + "\n";
+                        }
+                        else
+                        {
+                            renameError += newerName + "\n";
+                        }
                     }
                 }
+                return true;
+            });
+            if (result)
+            {
+                loading.Close();
                 ResultMessage(); // 結果を表示
+
             }
+
+        }
+        private async void GetFilesList(bool force = false)
+        {
+            GetFilesList getFiles = new GetFilesList();
+            await getFiles.FilesList(_vm.Path, force);
         }
 
         private void ResultMessage()
         {
             if (renameSuccess != string.Empty)
             {
-                MessageBox.Show($"リネームに成功しました！\n{renameSuccess}", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show($"リネームに成功しました！\n", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else if (renameError != string.Empty)
             {
                 MessageBox.Show($"リネームに失敗しました\n{renameError}", "Information", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            GetFilesList(true);
         }
 
-        public void ExchangeStr(IList FilesListView, string str,string replaceStr)
+        public async void ExchangeStr(IList FilesListView, string str, string replaceStr)
         {
+            Loading loading = new Loading();
+            loading.Show();
             if (FilesListView.Count > 0)
             {
-                // 初期化
-                bool renameResult = false;
-                string newerName = string.Empty;
-                string filePath = string.Empty;
-                RenameFile rename = new RenameFile();
-
-
-                // ListViewで選択されたItemを一つずつ処理
-
-                foreach (var item in FilesListView)
+                var result = await Task.Run(() =>
                 {
-                    filePath = (item as FilesListClass).filePath; // 生のファイルパス
+                    // 初期化
+                    bool renameResult = false;
+                    string newerName = string.Empty;
+                    string filePath = string.Empty;
+                    RenameFile rename = new RenameFile();
 
-                    // リプレースで対象の文字列を消す
-                    newerName = Path.GetFileName(filePath).Replace(str, replaceStr);
 
-                    renameResult = rename.RenameMethod(filePath, newerName); // 処理の結果を格納
+                    // ListViewで選択されたItemを一つずつ処理
 
-                    if (renameResult)
+                    foreach (var item in FilesListView)
                     {
-                        renameSuccess += newerName + "\n";
+                        filePath = (item as FilesListClass).filePath; // 生のファイルパス
+
+                        // リプレースで対象の文字列を消す
+                        newerName = Path.GetFileName(filePath).Replace(str, replaceStr);
+                        _vm.loadingFileName = "変換中：" + newerName;
+
+                        renameResult = rename.RenameMethod(filePath, newerName); // 処理の結果を格納
+
+                        if (renameResult)
+                        {
+                            renameSuccess += newerName + "\n";
+                        }
+                        else
+                        {
+                            renameError += newerName + "\n";
+                        }
                     }
-                    else
-                    {
-                        renameError += newerName + "\n";
-                    }
+
+
+                    return true;
+                });
+                if (result)
+                {
+                    loading.Close();
+                    ResultMessage(); // 結果を表示
                 }
-                
-
-                ResultMessage(); // 結果を表示
             }
         }
 

@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Markup;
 using static ComicManager.MainViewModel;
 
 namespace ComicManager
@@ -22,7 +21,9 @@ namespace ComicManager
             this.DataContext = viewModel;
             extractor = new ArchiveExtractor();
             viewModel.CoverImage = LoadImage(@"images\none.png");
+            GetFilesList(@"C:\");
         }
+
         MainViewModel viewModel;
         ArchiveExtractor extractor;
 
@@ -65,10 +66,11 @@ namespace ComicManager
             using (var dlg = new CommonOpenFileDialog())
             {
                 dlg.IsFolderPicker = true;
-
                 if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
                 {
-                    viewModel.Path = dlg.FileName;
+                    string selectedPath = dlg.FileName;
+                    GetFilesList(Path.GetFullPath(selectedPath));
+
                 }
             }
         }
@@ -94,27 +96,22 @@ namespace ComicManager
         }
 
 
-        private async void LeftStr_Click(object sender, RoutedEventArgs e)
+        private void LeftStr_Click()
         {
             try
             {
                 RenameFile renameFile = new RenameFile();
-                
-                renameFile.LeftAddStr(FilesListView.SelectedItems,strEntry.Text);
+
+                renameFile.LeftAddStr(FilesListView.SelectedItems, strEntry.Text);
 
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.ToString());
             }
-            finally
-            {
-                GetFilesList getFilesList = new GetFilesList();
-                await getFilesList.FilesList(viewModel.Path);
-            }
 
         }
-        private async void ExchangeStr_Click(object sender, RoutedEventArgs e)
+        private void ExchangeStr_Click()
         {
             try
             {
@@ -127,16 +124,11 @@ namespace ComicManager
             {
                 Debug.WriteLine(ex.ToString());
             }
-            finally
-            {
-                GetFilesList getFilesList = new GetFilesList();
-                await getFilesList.FilesList(viewModel.Path);
-            }
 
         }
 
 
-        private async void DeleteStr_Click(object sender, RoutedEventArgs e)
+        private void DeleteStr_Click()
         {
             try
             {
@@ -147,28 +139,30 @@ namespace ComicManager
             {
                 Debug.WriteLine(ex.ToString());
             }
-            finally
-            {
-                GetFilesList getFilesList = new GetFilesList();
-                await getFilesList.FilesList(viewModel.Path);
-            }
+        }
+
+        private async void GetFilesList(string _Path,bool force = false)
+        {
+            GetFilesList getFiles = new GetFilesList();
+            await getFiles.FilesList(_Path,force);
         }
 
         private void FilesListView_PreviewMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            Debug.WriteLine("Preview");
-            if(Path.HasExtension(filePath))
+            if (Path.HasExtension(filePath))
             {
                 FileOpen();
             }
             else
             {
-                if(filePath == "\\..")
+                if (filePath == "\\..")
                 {
-                    viewModel.Path = viewModel.Path + filePath;
-                }else
+                    string fullPath = viewModel.Path + filePath;
+                    GetFilesList(Path.GetFullPath(fullPath));
+                }
+                else
                 {
-                    viewModel.Path = filePath;
+                    GetFilesList(Path.GetFullPath(filePath));
                 }
             }
         }
@@ -207,6 +201,39 @@ namespace ComicManager
             finally
             {
                 viewModel.Path = viewModel.Path;
+                GetFilesList(Path.GetFullPath(filePath));
+
+            }
+        }
+
+        private void FileNameCopy_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(Path.GetFileNameWithoutExtension(filePath));
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Conv_Click(object sender, RoutedEventArgs e)
+        {
+            if (LeftStr.IsChecked == true)
+            {
+                LeftStr_Click();
+            }
+            else if (RightStr.IsChecked == true)
+            {
+                //loading.Show();
+                //RightStr_Click();
+            }
+            else if(DeleteStr.IsChecked == true)
+            {
+                DeleteStr_Click();
+            }
+            else if(ExchangeStr.IsChecked == true)
+            {
+                ExchangeStr_Click();
             }
         }
     }

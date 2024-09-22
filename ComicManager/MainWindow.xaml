@@ -7,7 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="MainWindow"
     Width="1000"
-    Height="506"
+    Height="800"
+    Closed="Window_Closed"
     mc:Ignorable="d">
     <Grid>
         <!--  Define Grid Rows and Columns  -->
@@ -41,25 +42,27 @@
             <Image
                 x:Name="Cover"
                 Margin="0,0,0,-1"
+                RenderOptions.BitmapScalingMode="Fant"
                 Source="{Binding CoverImage}" />
         </Border>
 
         <!--  File ListView  -->
         <ListView
             x:Name="FilesListView"
-            PreviewMouseDoubleClick="FilesListView_PreviewMouseDoubleClick"
-            MouseDoubleClick="FilesListView_MouseDoubleClick"
             Grid.Row="1"
             Grid.Column="1"
             Margin="10,10,11,10"
             Background="LightGray"
             ItemsSource="{Binding FilesList}"
+            MouseDoubleClick="FilesListView_MouseDoubleClick"
+            PreviewMouseDoubleClick="FilesListView_PreviewMouseDoubleClick"
             SelectionChanged="ListView_SelectionChanged"
             SelectionMode="Extended">
             <ListView.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="開く" Click="Open_Click"/>
-                    <MenuItem Header="削除" Click="Delete_Click"/>
+                    <MenuItem Click="Open_Click" Header="開く" />
+                    <MenuItem Click="Delete_Click" Header="削除" />
+                    <MenuItem Click="FileNameCopy_Click" Header="ファイル名をコピー" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>
@@ -70,7 +73,7 @@
                     <GridViewColumn DisplayMemberBinding="{Binding dateTime}">
                         <GridViewColumnHeader Click="CreateTime_Click" Content="CreateTime" />
                     </GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding filePath}" Header="FilePath" />
+                    <!--<GridViewColumn DisplayMemberBinding="{Binding filePath}" Header="FilePath" />-->
                     <GridViewColumn DisplayMemberBinding="{Binding maxBytes}" Header="Bytes" />
                 </GridView>
             </ListView.View>
@@ -90,27 +93,26 @@
             Margin="10,12,10,10"
             Header="リネーム">
             <StackPanel>
-                <Button
+                <RadioButton
                     Margin="10,10,10,10"
                     Padding="5"
-                    HorizontalContentAlignment="Center"
-                    VerticalContentAlignment="Center"
-                    Click="LeftStr_Click"
-                    Content="指定した文字列を&#xa;左に挿入" />
-                <Button
+                    x:Name="LeftStr"
+                    Content="指定した文字列を&#xA;左に挿入" />
+                <RadioButton
                     Margin="10,10,10,10"
                     Padding="5"
-                    Content="指定した文字列を&#xa;右に挿入" />
-                <Button
+                    x:Name="RightStr"
+                    Content="指定した文字列を&#xA;右に挿入" />
+                <RadioButton
                     Margin="10,10,10,10"
                     Padding="5"
-                    Click="DeleteStr_Click"
-                    Content="指定した文字列を&#xa;削除" />
-                <Button
+                    x:Name="DeleteStr"
+                    Content="指定した文字列を&#xA;削除" />
+                <RadioButton
                     Margin="10,10,10,10"
                     Padding="5"
-                    Click="ExchangeStr_Click"
-                    Content="指定した文字列と&#xa;置き換える" />
+                    x:Name="ExchangeStr"
+                    Content="指定した文字列と&#xA;置き換える" />
                 <TextBox
                     x:Name="strEntry"
                     Height="20"
@@ -124,6 +126,12 @@
                     Margin="10,10,10,10"
                     FontSize="10"
                     Text="置き換え後の文字列を追加" />
+                <Button
+                    Padding="5"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Click="Conv_Click"
+                    Content="変換" Width="117" />
             </StackPanel>
         </GroupBox>
     </Grid>

@@ -21,6 +21,27 @@ namespace ComicManager
             }
             
         }
+        private static bool IsImageFile(string extension)
+        {
+            switch (extension)
+            {
+                case ".jpg":
+                case ".jpeg":
+                case ".png":
+                case ".gif":
+                case ".bmp":
+                case ".tiff":
+                case ".tif":
+                case ".heic":
+                case ".webp":
+                case ".raw":
+                case ".svg":
+                case ".ico":
+                    return true;
+                default:
+                    return false;
+            }
+        }
         private int FileExists(SevenZipExtractor extractor)
         {
             int i = 0;
@@ -32,7 +53,10 @@ namespace ComicManager
                 // ファイルだった場合、即時に抜ける
                 if(Path.HasExtension(firstFile.FileName))
                 {
-                    break;             
+                    if(IsImageFile(Path.GetExtension(firstFile.FileName).ToLower()))
+                    {
+                        break;
+                    }
                 }
 
                 Debug.WriteLine(firstFile.FileName);
