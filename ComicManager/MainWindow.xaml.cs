@@ -210,6 +210,10 @@ namespace ComicManager
         {
             Clipboard.SetText(Path.GetFileNameWithoutExtension(filePath));
         }
+        private void FileDirectoryOpen_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
 
         private void Window_Closed(object sender, EventArgs e)
         {

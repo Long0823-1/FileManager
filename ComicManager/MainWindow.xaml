@@ -63,6 +63,7 @@
                     <MenuItem Click="Open_Click" Header="開く" />
                     <MenuItem Click="Delete_Click" Header="削除" />
                     <MenuItem Click="FileNameCopy_Click" Header="ファイル名をコピー" />
+                    <MenuItem Click="FileDirectoryOpen_Click" Header="ファイルの場所を開く"/>
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>

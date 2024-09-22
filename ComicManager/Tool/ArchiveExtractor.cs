@@ -6,6 +6,8 @@ namespace ComicManager
 {
     public class ArchiveExtractor
     {
+        string sevenZip_x86_x64 = @"C:\Program Files\7-Zip\7z.dll";
+        string sevenZip_x86 = @"C:\Program Files (x86)\7-Zip\7z.dll";
         public ArchiveExtractor()
         {
             vm = (App.Current as App).MainViewModel;
@@ -71,7 +73,13 @@ namespace ComicManager
 
             try
             {
-                SevenZipBase.SetLibraryPath(@"C:\Program Files\7-Zip\7z.dll");
+                if (File.Exists(sevenZip_x86_x64))
+                {
+                    SevenZipBase.SetLibraryPath(sevenZip_x86_x64);
+                }else
+                {
+                    SevenZipBase.SetLibraryPath(sevenZip_x86);
+                }
 
                 using (var extractor = new SevenZipExtractor(path))
                 {
