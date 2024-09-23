@@ -1,4 +1,5 @@
 ﻿using SevenZip;
+using SkiaSharp;
 using System.Diagnostics;
 using System.IO;
 
@@ -21,8 +22,13 @@ namespace ComicManager
             {
                 Directory.CreateDirectory(CachePath);
             }
-            
+
         }
+        /// <summary>
+        /// 画像かどうかを判別
+        /// </summary>
+        /// <param name="extension">拡張子</param>
+        /// <returns>画像かどうかをbool型で返す</returns>
         private static bool IsImageFile(string extension)
         {
             switch (extension)
@@ -44,18 +50,25 @@ namespace ComicManager
                     return false;
             }
         }
-        private int FileExists(SevenZipExtractor extractor)
+
+        /// <summary>
+        /// 画像ファイルがアーカイブ内に有るかどうかをチェック
+        /// </summary>
+        /// <param name="extractor">SevenZipExtractor</param>
+        /// <returns>ファイルの場所を数値で返す（0から）</returns>
+        private static int FileExists(SevenZipExtractor extractor)
         {
             int i = 0;
             var firstFile = extractor.ArchiveFileData[i];
-            while(!Path.HasExtension(firstFile.FileName))
+            while (!Path.HasExtension(firstFile.FileName))
             {
                 firstFile = extractor.ArchiveFileData[i];
 
                 // ファイルだった場合、即時に抜ける
-                if(Path.HasExtension(firstFile.FileName))
+                if (Path.HasExtension(firstFile.FileName))
                 {
-                    if(IsImageFile(Path.GetExtension(firstFile.FileName).ToLower()))
+                    // 拡張子を見て、画像ファイルかどうかを判断
+                    if (IsImageFile(Path.GetExtension(firstFile.FileName).ToLower()))
                     {
                         break;
                     }
@@ -66,7 +79,11 @@ namespace ComicManager
             }
             return i;
         }
-
+        /// <summary>
+        /// 解凍
+        /// </summary>
+        /// <param name="path">ファイルパス</param>
+        /// <return>サムネイルのある場所を返す</returns>
         private string ExtractArchive(string path)
         {
             CreateDirectory(); // とりあえずディレクトリを作る
@@ -76,7 +93,8 @@ namespace ComicManager
                 if (File.Exists(sevenZip_x86_x64))
                 {
                     SevenZipBase.SetLibraryPath(sevenZip_x86_x64);
-                }else
+                }
+                else
                 {
                     SevenZipBase.SetLibraryPath(sevenZip_x86);
                 }
@@ -92,12 +110,12 @@ namespace ComicManager
                         Directory.CreateDirectory(outputDirectory);
 
                         string outputFile = Path.Combine(outputDirectory, "Cover.png");
-                        using (FileStream fs = new FileStream(outputFile,FileMode.Create))
+                        using (FileStream fs = new FileStream(outputFile, FileMode.Create))
                         {
                             extractor.ExtractFile(result, fs);
                             fs.Close();
                         }
-                        
+
                         return outputFile;
 
                     }
@@ -118,14 +136,64 @@ namespace ComicManager
             }
 
             return "謎エラー";
-            
+
         }
+        /// <summary>
+        /// pdfからjpgに変換
+        /// </summary>
+        /// <param name="filePath">ファイルパス</param>
+        /// <returns>サムネイルのある場所を返す</returns>
+        public string PdfToJpg(string filePath)
+        {
+            try
+            {
+                using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                byte[] fileData = new byte[new FileInfo(filePath).Length];
+                stream.Read(fileData, 0, fileData.Length);
+                string base64 = Convert.ToBase64String(fileData);
+
+                string outputDir = System.IO.Path.Combine(CachePath, System.IO.Path.GetFileNameWithoutExtension(filePath));
+                Directory.CreateDirectory(outputDir);
+
+                var image = PDFtoImage.Conversion.ToImage(base64, 0);
+                var skImage = SKImage.FromBitmap(image);
+                string outputPath = System.IO.Path.Combine(outputDir, $"cover.jpg");
+
+                using (var saveStream = File.Create(outputPath))
+                {
+                    var encodedData = skImage.Encode(SKEncodedImageFormat.Jpeg, 80); // Jpegに変換
+                    encodedData.SaveTo(saveStream); // ファイルに保存
+                }
+
+                Debug.WriteLine($"Image saved: {outputPath}");
+
+
+                return outputPath;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+                return filePath;
+            }
+        }
+        /// <summary>
+        /// ここからすべてが始まる
+        /// </summary>
+        /// <param name="filePath">ファイルパス</param>
         public void GetThumb(string filePath)
         {
             try
             {
-                string result = ExtractArchive(filePath);
-                vm.CoverImage = MainViewModel.LoadImage(result); // アーカイブファイルを解凍する
+                string result = string.Empty;
+                if (Path.GetExtension(filePath).ToLower() == ".pdf")
+                {
+                    result = PdfToJpg(filePath); // pdfからjpgに変換
+                }else
+                {
+                    result = ExtractArchive(filePath); // アーカイブから画像を解凍
+                }
+
+                vm.CoverImage = MainViewModel.LoadImage(result); // 画像をStreamに変換
             }
             catch (Exception ex)
             {

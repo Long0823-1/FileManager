@@ -167,11 +167,21 @@ namespace ComicManager
             }
         }
 
-        private void FileOpen()
+        private void FileOpen(string directory = "")
         {
+            string path = string.Empty;
+
+            if(directory == "")
+            {
+                path = filePath;
+            }else
+            {
+                path = directory;
+            }
+
             var startInfo = new System.Diagnostics.ProcessStartInfo()
             {
-                FileName = filePath,
+                FileName = path,
                 UseShellExecute = true,
                 CreateNoWindow = true,
             };
@@ -212,7 +222,7 @@ namespace ComicManager
         }
         private void FileDirectoryOpen_Click(object sender, RoutedEventArgs e)
         {
-
+            FileOpen(Path.GetDirectoryName(filePath));
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -239,6 +249,29 @@ namespace ComicManager
             {
                 ExchangeStr_Click();
             }
+        }
+        private ObservableCollection<FilesListClass> _FilesList = new ObservableCollection<FilesListClass>();
+        private bool onetime = true;
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string searchText = (sender as TextBox).Text;
+
+            if (onetime)
+            {
+                _FilesList = viewModel.FilesList;
+                onetime = false;
+            }
+
+            if (searchText == "")
+            {
+                viewModel.FilesList = _FilesList;
+                onetime = true;
+            }else
+            {
+                var filteredFiles = new ObservableCollection<FilesListClass>(_FilesList.Where(fileName => fileName.fileName.Contains(searchText)));
+                viewModel.FilesList = filteredFiles;
+            }
+
         }
     }
 }
