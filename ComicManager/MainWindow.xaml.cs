@@ -167,21 +167,22 @@ namespace ComicManager
             }
         }
 
-        private void FileOpen(string directory = "")
+        private void FileOpen(bool isExplorer = false)
         {
             string path = string.Empty;
 
-            if(directory == "")
+            if(isExplorer)
             {
-                path = filePath;
+                path = @"C:\Windows\explorer.exe";
             }else
             {
-                path = directory;
+                path = filePath;
             }
 
             var startInfo = new System.Diagnostics.ProcessStartInfo()
             {
                 FileName = path,
+                Arguments =  $" /select,\"{filePath}\"" ,
                 UseShellExecute = true,
                 CreateNoWindow = true,
             };
@@ -222,7 +223,7 @@ namespace ComicManager
         }
         private void FileDirectoryOpen_Click(object sender, RoutedEventArgs e)
         {
-            FileOpen(Path.GetDirectoryName(filePath));
+            FileOpen(true);
         }
 
         private void Window_Closed(object sender, EventArgs e)

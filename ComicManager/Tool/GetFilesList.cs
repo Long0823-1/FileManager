@@ -74,7 +74,7 @@ namespace ComicManager
                 Debug.WriteLine(file);
                 filename = Path.GetFileName(file); //ファイル名だけ一旦ここに格納
 
-                vm.loadingFileName = "ロード中：" + filename; // Loading中のファイル名を表示
+                vm.loadingFileName = "ロード中\n" + filename; // Loading中のファイル名を表示
 
                 _tempList.Add(new FilesListClass { filePath = file, fileName = filename, dateTime = File.GetCreationTime(file).ToString("yyyy/MM/dd（dddd）"), maxBytes = "" }); //配列にクラスを格納
             }
