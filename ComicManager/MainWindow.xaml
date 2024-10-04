@@ -23,7 +23,7 @@
     <Grid Margin="10" Background="#f4f4f4">
         <!--  Define Grid Rows and Columns  -->
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="64" />
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -33,16 +33,34 @@
         </Grid.ColumnDefinitions>
 
         <!--  Search Bar  -->
-        <TextBox
-            Grid.Row="0"
-            Grid.Column="0"
-            Margin="10,10,10,10"
-            Padding="5"
-            Background="#ffffff"
-            BorderBrush="#ccc"
-            FontSize="14"
-            Foreground="Gray"
-            Text="" TextChanged="TextBox_TextChanged" />
+        <Grid Margin="0,0,10,0">
+            <Border
+                Margin="10,10,10,10"
+                Background="#e0e0e0"
+                BorderBrush="#ccc"
+                BorderThickness="1"
+                CornerRadius="8">
+                <Grid>
+                    <Image
+                        Height="30"
+                        Margin="10,6,0,6"
+                        RenderOptions.BitmapScalingMode="Fant"
+                        Source="/search.png" HorizontalAlignment="Left" Width="27" />
+                    <TextBox
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        x:Name="searchBox"
+                        Margin="50,5,10,5"
+                        Padding="5"
+                        Background="#ffffff"
+                        BorderBrush="#ccc"
+                        FontSize="14"
+                        Foreground="Gray"
+                        Text=""
+                        TextChanged="TextBox_TextChanged" />
+                </Grid>
+            </Border>
+        </Grid>
 
         <!--  Comic Cover Image Placeholder  -->
         <Border
@@ -70,7 +88,6 @@
             BorderBrush="#ccc"
             BorderThickness="1"
             ItemsSource="{Binding FilesList}"
-            MouseDoubleClick="FilesListView_MouseDoubleClick"
             PreviewMouseDoubleClick="FilesListView_PreviewMouseDoubleClick"
             SelectionChanged="ListView_SelectionChanged"
             SelectionMode="Extended">
@@ -86,7 +103,7 @@
 
             <ListView.View>
                 <GridView>
-                    <GridViewColumn DisplayMemberBinding="{Binding fileName}">
+                    <GridViewColumn Width="300" DisplayMemberBinding="{Binding fileName}">
                         <GridViewColumnHeader Click="FileName_Click" Content="File Name" />
                     </GridViewColumn>
                     <GridViewColumn DisplayMemberBinding="{Binding dateTime}">
@@ -98,19 +115,23 @@
         </ListView>
 
         <!--  Path Label  -->
-        <Label
-            Grid.Column="1"
-            Margin="10,10,11,10"
-            VerticalAlignment="Bottom"
-            Content="{Binding Path}"
-            FontSize="12"
-            Foreground="Gray" />
-
+        <Border
+            Margin="10,10,10,10"
+            Background="#e0e0e0"
+            BorderBrush="#ccc"
+            BorderThickness="1"
+            CornerRadius="8" Grid.Column="1">
+            <Label
+                Grid.Column="1"
+                Margin="10,9,11,9"
+                Content="{Binding Path}"
+                FontSize="12"
+                Foreground="Black" />
+        </Border>
         <!--  Folder Open Button  -->
         <Button
             Grid.Column="2"
-            Height="40"
-            Margin="3,9,3,9"
+            Margin="3,20,3,20"
             HorizontalContentAlignment="Center"
             VerticalContentAlignment="Center"
             Background="#3b5998"

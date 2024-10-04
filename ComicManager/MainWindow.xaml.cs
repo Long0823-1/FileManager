@@ -141,10 +141,10 @@ namespace ComicManager
             }
         }
 
-        private async void GetFilesList(string _Path,bool force = false)
+        private async void GetFilesList(string _Path, bool force = false)
         {
             GetFilesList getFiles = new GetFilesList();
-            await getFiles.FilesList(_Path,force);
+            await getFiles.FilesList(_Path, force);
         }
 
         private void FilesListView_PreviewMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -171,10 +171,11 @@ namespace ComicManager
         {
             string path = string.Empty;
 
-            if(isExplorer)
+            if (isExplorer)
             {
                 path = @"C:\Windows\explorer.exe";
-            }else
+            }
+            else
             {
                 path = filePath;
             }
@@ -182,16 +183,11 @@ namespace ComicManager
             var startInfo = new System.Diagnostics.ProcessStartInfo()
             {
                 FileName = path,
-                Arguments =  $" /select,\"{filePath}\"" ,
+                Arguments = $" /select,\"{filePath}\"",
                 UseShellExecute = true,
                 CreateNoWindow = true,
             };
             System.Diagnostics.Process.Start(startInfo);
-        }
-
-        private void FilesListView_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            //Debug.WriteLine("double");
         }
 
         private void Open_Click(object sender, RoutedEventArgs e)
@@ -242,14 +238,16 @@ namespace ComicManager
                 //loading.Show();
                 //RightStr_Click();
             }
-            else if(DeleteStr.IsChecked == true)
+            else if (DeleteStr.IsChecked == true)
             {
                 DeleteStr_Click();
             }
-            else if(ExchangeStr.IsChecked == true)
+            else if (ExchangeStr.IsChecked == true)
             {
                 ExchangeStr_Click();
             }
+
+            searchBox.Text = string.Empty;
         }
         private ObservableCollection<FilesListClass> _FilesList = new ObservableCollection<FilesListClass>();
         private bool onetime = true;
@@ -267,7 +265,8 @@ namespace ComicManager
             {
                 viewModel.FilesList = _FilesList;
                 onetime = true;
-            }else
+            }
+            else
             {
                 var filteredFiles = new ObservableCollection<FilesListClass>(_FilesList.Where(fileName => fileName.fileName.Contains(searchText)));
                 viewModel.FilesList = filteredFiles;

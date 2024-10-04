@@ -64,6 +64,7 @@ namespace ComicManager
             vm.PreviousFilesList = vm.FilesList;
             vm.PreviousPath = vm.Path;
             vm.Path = path;
+
             //　一時的に格納
             ObservableCollection<FilesListClass> _tempList = new ObservableCollection<FilesListClass>();
 
