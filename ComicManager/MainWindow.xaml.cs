@@ -145,6 +145,7 @@ namespace ComicManager
         {
             GetFilesList getFiles = new GetFilesList();
             await getFiles.FilesList(_Path, force);
+
         }
 
         private void FilesListView_PreviewMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -271,6 +272,16 @@ namespace ComicManager
                 var filteredFiles = new ObservableCollection<FilesListClass>(_FilesList.Where(fileName => fileName.fileName.Contains(searchText)));
                 viewModel.FilesList = filteredFiles;
             }
+
+        }
+
+        private void FFmpeg_Download_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void SevenZip_Download_Click(object sender, RoutedEventArgs e)
+        {
 
         }
     }

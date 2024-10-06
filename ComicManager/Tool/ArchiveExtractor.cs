@@ -180,7 +180,7 @@ namespace ComicManager
         /// ここからすべてが始まる
         /// </summary>
         /// <param name="filePath">ファイルパス</param>
-        public void GetThumb(string filePath)
+        public async void GetThumb(string filePath)
         {
             try
             {
@@ -188,7 +188,37 @@ namespace ComicManager
                 if (Path.GetExtension(filePath).ToLower() == ".pdf")
                 {
                     result = PdfToJpg(filePath); // pdfからjpgに変換
-                }else
+                }
+                else if (Path.GetExtension(filePath).ToLower() switch { ".mp4" or ".m4v" or ".mov" or ".mkv" or ".wmv" or ".ts" => true, ".png" or ".jpg" or ".zip" or ".rar" or ".7z" => false })
+                {
+                    string path = string.Empty;
+                    path = @".\ffmpeg.exe";
+                    string outputDir = System.IO.Path.Combine(CachePath, System.IO.Path.GetFileNameWithoutExtension(filePath));
+                    string output = Path.Combine(outputDir, "cover.png");
+                    Directory.CreateDirectory(outputDir);
+
+                    if (!File.Exists(output))
+                    {
+                        var startInfo = new System.Diagnostics.ProcessStartInfo()
+                        {
+                            FileName = path,
+                            Arguments = @$" -i ""{filePath}"" -vf thumbnail=300 -frames:v 1 ""{output}""",
+                            UseShellExecute = false,
+                            CreateNoWindow = true,
+
+                        };
+                        var isEnd = System.Diagnostics.Process.Start(startInfo);
+
+                        result = await CoverImageIsExist(output);
+
+                    }
+                    else
+                    {
+                        result = output;
+                    }
+
+                }
+                else
                 {
                     result = ExtractArchive(filePath); // アーカイブから画像を解凍
                 }
@@ -200,5 +230,25 @@ namespace ComicManager
                 Debug.Write(ex);
             }
         }
+
+        private async static Task<string> CoverImageIsExist(string output)
+        {
+            return await Task.Run(async() =>
+            {
+                while (!File.Exists(output)) ;
+                try
+                {
+                    MainViewModel.LoadImage(output);
+                }
+                catch (System.IO.IOException)
+                {
+                    return await CoverImageIsExist(output);
+                }
+                return output;
+            });
+
+        }
+
+
     }
 }

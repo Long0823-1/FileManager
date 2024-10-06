@@ -12,7 +12,6 @@
     MaxHeight="200"
     WindowStyle="None"
     Background="DimGray"
-    Topmost="True"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d" Closed="Window_Closed"
     >

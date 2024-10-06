@@ -19,188 +19,201 @@
         <BitmapImage x:Key="CopyIcon" UriSource="pack://application:,,,/Icons/copy.png" />
         <BitmapImage x:Key="FolderIcon" UriSource="pack://application:,,,/Icons/folder.png" />-->
     </Window.Resources>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="ファイル">
+            </MenuItem>
+            <MenuItem Header="ツール">
+                <MenuItem Header="FFMPEGをダウンロード" Click="FFmpeg_Download_Click"/>
+                <MenuItem Header="7-Zipをインストールする" Click="SevenZip_Download_Click"/>
+            </MenuItem>
+        </Menu>
+        <Grid Margin="10" Background="#f4f4f4">
+            <!--  Define Grid Rows and Columns  -->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="64" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="380*" />
+                <ColumnDefinition Width="300*" />
+                <ColumnDefinition Width="137*" />
+            </Grid.ColumnDefinitions>
 
-    <Grid Margin="10" Background="#f4f4f4">
-        <!--  Define Grid Rows and Columns  -->
-        <Grid.RowDefinitions>
-            <RowDefinition Height="64" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="380*" />
-            <ColumnDefinition Width="300*" />
-            <ColumnDefinition Width="137*" />
-        </Grid.ColumnDefinitions>
+            <!--  Search Bar  -->
+            <Grid Margin="0,0,10,0">
+                <Border
+                    Margin="10,10,10,10"
+                    Background="#e0e0e0"
+                    BorderBrush="#ccc"
+                    BorderThickness="1"
+                    CornerRadius="8">
+                    <Grid>
+                        <Image
+                            Width="27"
+                            Height="30"
+                            Margin="10,6,0,6"
+                            HorizontalAlignment="Left"
+                            RenderOptions.BitmapScalingMode="Fant"
+                            Source="images/search.png" />
+                        <TextBox
+                            x:Name="searchBox"
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="50,5,10,5"
+                            Padding="5"
+                            Background="#ffffff"
+                            BorderBrush="#ccc"
+                            FontSize="14"
+                            Foreground="Gray"
+                            Text=""
+                            TextChanged="TextBox_TextChanged" />
+                    </Grid>
+                </Border>
+            </Grid>
 
-        <!--  Search Bar  -->
-        <Grid Margin="0,0,10,0">
+            <!--  Comic Cover Image Placeholder  -->
             <Border
+                Grid.Row="1"
+                Grid.Column="0"
                 Margin="10,10,10,10"
                 Background="#e0e0e0"
                 BorderBrush="#ccc"
                 BorderThickness="1"
                 CornerRadius="8">
-                <Grid>
-                    <Image
-                        Height="30"
-                        Margin="10,6,0,6"
-                        RenderOptions.BitmapScalingMode="Fant"
-                        Source="/search.png" HorizontalAlignment="Left" Width="27" />
-                    <TextBox
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        x:Name="searchBox"
-                        Margin="50,5,10,5"
-                        Padding="5"
-                        Background="#ffffff"
-                        BorderBrush="#ccc"
-                        FontSize="14"
-                        Foreground="Gray"
-                        Text=""
-                        TextChanged="TextBox_TextChanged" />
-                </Grid>
+                <Image
+                    x:Name="Cover"
+                    Margin="0"
+                    RenderOptions.BitmapScalingMode="Fant"
+                    Source="{Binding CoverImage}" />
             </Border>
-        </Grid>
 
-        <!--  Comic Cover Image Placeholder  -->
-        <Border
-            Grid.Row="1"
-            Grid.Column="0"
-            Margin="10,10,10,10"
-            Background="#e0e0e0"
-            BorderBrush="#ccc"
-            BorderThickness="1"
-            CornerRadius="8">
-            <Image
-                x:Name="Cover"
-                Margin="0"
-                RenderOptions.BitmapScalingMode="Fant"
-                Source="{Binding CoverImage}" />
-        </Border>
-
-        <!--  File ListView  -->
-        <ListView
-            x:Name="FilesListView"
-            Grid.Row="1"
-            Grid.Column="1"
-            Margin="10,10,11,10"
-            Background="#ffffff"
-            BorderBrush="#ccc"
-            BorderThickness="1"
-            ItemsSource="{Binding FilesList}"
-            PreviewMouseDoubleClick="FilesListView_PreviewMouseDoubleClick"
-            SelectionChanged="ListView_SelectionChanged"
-            SelectionMode="Extended">
-
-            <ListView.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Click="Open_Click" Header="開く" />
-                    <MenuItem Click="Delete_Click" Header="削除" />
-                    <MenuItem Click="FileNameCopy_Click" Header="ファイル名をコピー" />
-                    <MenuItem Click="FileDirectoryOpen_Click" Header="ファイルの場所を開く" />
-                </ContextMenu>
-            </ListView.ContextMenu>
-
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Width="300" DisplayMemberBinding="{Binding fileName}">
-                        <GridViewColumnHeader Click="FileName_Click" Content="File Name" />
-                    </GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding dateTime}">
-                        <GridViewColumnHeader Click="CreateTime_Click" Content="Create Time" />
-                    </GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding maxBytes}" Header="Bytes" />
-                </GridView>
-            </ListView.View>
-        </ListView>
-
-        <!--  Path Label  -->
-        <Border
-            Margin="10,10,10,10"
-            Background="#e0e0e0"
-            BorderBrush="#ccc"
-            BorderThickness="1"
-            CornerRadius="8" Grid.Column="1">
-            <Label
+            <!--  File ListView  -->
+            <ListView
+                x:Name="FilesListView"
+                Grid.Row="1"
                 Grid.Column="1"
-                Margin="10,9,11,9"
-                Content="{Binding Path}"
-                FontSize="12"
-                Foreground="Black" />
-        </Border>
-        <!--  Folder Open Button  -->
-        <Button
-            Grid.Column="2"
-            Margin="3,20,3,20"
-            HorizontalContentAlignment="Center"
-            VerticalContentAlignment="Center"
-            Background="#3b5998"
-            BorderBrush="#3b5998"
-            Click="FolderOpen_Click"
-            Content="開く"
-            FontSize="14"
-            Foreground="White" />
+                Margin="10,10,11,10"
+                Background="#ffffff"
+                BorderBrush="#ccc"
+                BorderThickness="1"
+                ItemsSource="{Binding FilesList}"
+                PreviewMouseDoubleClick="FilesListView_PreviewMouseDoubleClick"
+                SelectionChanged="ListView_SelectionChanged"
+                SelectionMode="Extended">
 
-        <!--  Rename GroupBox  -->
-        <GroupBox
-            Grid.Row="1"
-            Grid.Column="2"
-            Margin="10,12,10,10"
-            FontWeight="Bold"
-            Header="リネーム">
-            <StackPanel>
-                <RadioButton
-                    x:Name="LeftStr"
-                    Margin="10,10,10,10"
-                    Padding="5"
-                    Content="指定した文字列を&#xA;左に挿入" />
-                <RadioButton
-                    x:Name="RightStr"
-                    Margin="10,10,10,10"
-                    Padding="5"
-                    Content="指定した文字列を&#xA;右に挿入" />
-                <RadioButton
-                    x:Name="DeleteStr"
-                    Margin="10,10,10,10"
-                    Padding="5"
-                    Content="指定した文字列を&#xA;削除" />
-                <RadioButton
-                    x:Name="ExchangeStr"
-                    Margin="10,10,10,10"
-                    Padding="5"
-                    Content="指定した文字列と&#xA;置き換える" />
-                <TextBox
-                    x:Name="strEntry"
-                    Height="20"
-                    Margin="10,10,10,10"
-                    Background="#ffffff"
-                    FontSize="12"
-                    Foreground="Gray"
-                    Text="置き換え前の文字列を追加" />
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Click="Open_Click" Header="開く" />
+                        <MenuItem Click="Delete_Click" Header="削除" />
+                        <MenuItem Click="FileNameCopy_Click" Header="ファイル名をコピー" />
+                        <MenuItem Click="FileDirectoryOpen_Click" Header="ファイルの場所を開く" />
+                    </ContextMenu>
+                </ListView.ContextMenu>
+
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Width="300" DisplayMemberBinding="{Binding fileName}">
+                            <GridViewColumnHeader Click="FileName_Click" Content="File Name" />
+                        </GridViewColumn>
+                        <GridViewColumn DisplayMemberBinding="{Binding dateTime}">
+                            <GridViewColumnHeader Click="CreateTime_Click" Content="Create Time" />
+                        </GridViewColumn>
+                        <GridViewColumn DisplayMemberBinding="{Binding maxBytes}" Header="Bytes" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+            <!--  Path Label  -->
+            <Border
+                Grid.Column="1"
+                Margin="10,10,10,10"
+                Background="#e0e0e0"
+                BorderBrush="#ccc"
+                BorderThickness="1"
+                CornerRadius="8">
                 <Label
-                    HorizontalAlignment="Center"
-                    Content="↓"
-                    FontSize="14" />
-                <TextBox
-                    x:Name="ExchangeStrEntry"
-                    Height="20"
-                    Margin="10,10,10,10"
-                    Background="#ffffff"
+                    Grid.Column="1"
+                    Margin="10,9,11,9"
+                    Content="{Binding Path}"
                     FontSize="12"
-                    Foreground="Gray"
-                    Text="置き換え後の文字列を追加" />
-                <Button
-                    Width="117"
-                    Padding="5"
-                    HorizontalContentAlignment="Center"
-                    VerticalContentAlignment="Center"
-                    Background="#ff5722"
-                    BorderBrush="#ff5722"
-                    Click="Conv_Click"
-                    Content="変換"
-                    FontSize="14"
-                    Foreground="White" />
-            </StackPanel>
-        </GroupBox>
-    </Grid>
+                    Foreground="Black" />
+            </Border>
+            <!--  Folder Open Button  -->
+            <Button
+                Grid.Column="2"
+                Margin="3,20,3,20"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Background="#3b5998"
+                BorderBrush="#3b5998"
+                Click="FolderOpen_Click"
+                Content="開く"
+                FontSize="14"
+                Foreground="White" />
+
+            <!--  Rename GroupBox  -->
+            <GroupBox
+                Grid.Row="1"
+                Grid.Column="2"
+                Margin="10,12,10,10"
+                Background="White"
+                FontWeight="Bold"
+                Header="リネーム">
+                <StackPanel>
+                    <RadioButton
+                        x:Name="LeftStr"
+                        Margin="10,10,10,10"
+                        Padding="5"
+                        Content="指定した文字列を&#xA;左に挿入" />
+                    <RadioButton
+                        x:Name="RightStr"
+                        Margin="10,10,10,10"
+                        Padding="5"
+                        Content="指定した文字列を&#xA;右に挿入" />
+                    <RadioButton
+                        x:Name="DeleteStr"
+                        Margin="10,10,10,10"
+                        Padding="5"
+                        Content="指定した文字列を&#xA;削除" />
+                    <RadioButton
+                        x:Name="ExchangeStr"
+                        Margin="10,10,10,10"
+                        Padding="5"
+                        Content="指定した文字列と&#xA;置き換える" />
+                    <TextBox
+                        x:Name="strEntry"
+                        Height="20"
+                        Margin="10,10,10,10"
+                        Background="#ffffff"
+                        FontSize="12"
+                        Foreground="Gray"
+                        Text="置き換え前の文字列を追加" />
+                    <Label
+                        HorizontalAlignment="Center"
+                        Content="↓"
+                        FontSize="14" />
+                    <TextBox
+                        x:Name="ExchangeStrEntry"
+                        Height="20"
+                        Margin="10,10,10,10"
+                        Background="#ffffff"
+                        FontSize="12"
+                        Foreground="Gray"
+                        Text="置き換え後の文字列を追加" />
+                    <Button
+                        Width="117"
+                        Padding="5"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Background="#ff5722"
+                        BorderBrush="#ff5722"
+                        Click="Conv_Click"
+                        Content="変換"
+                        FontSize="14"
+                        Foreground="White" />
+                </StackPanel>
+            </GroupBox>
+        </Grid>
+    </DockPanel>
 </Window>

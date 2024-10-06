@@ -20,42 +20,51 @@ namespace ComicManager
         {
             Loading loading = new Loading();
             loading.Show();
-            var get = await Task.Run(() =>
-             {
-                 bool result = false;
-                 // 前の情報を格納
-
-                 if (force)
+            try
+            {
+                var get = await Task.Run(() =>
                  {
-                     GetFilesListMethod(path);
+                     bool result = false;
+                     // 前の情報を格納
 
-                     result = true;
-                 }
-                 else if (path == vm.PreviousPath)
-                 {
-                     vm.FilesList = vm.PreviousFilesList;
-                     vm.Path = vm.PreviousPath;
-                     result = true;
-                 }
-                 else
-                 {
-                     GetFilesListMethod(path);
+                     if (force)
+                     {
+                         GetFilesListMethod(path);
 
-                     result = true;
-                 }
+                         result = true;
+                     }
+                     else if (path == vm.PreviousPath)
+                     {
+                         vm.FilesList = vm.PreviousFilesList;
+                         vm.Path = vm.PreviousPath;
+                         result = true;
+                     }
+                     else
+                     {
+                         GetFilesListMethod(path);
 
-                 return result;
-             });
+                         result = true;
+                     }
 
-            if (get)
+                     return result;
+                 });
+
+                if (get)
+                {
+                    loading.Close();
+                }
+                else
+                {
+                    loading.Close();
+                    MessageBox.Show("Error", "ロードに失敗しました", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (System.UnauthorizedAccessException UnauthError)
             {
                 loading.Close();
+                MessageBox.Show(UnauthError.Message,"Error" );
             }
-            else
-            {
-                loading.Close();
-                MessageBox.Show("Error", "ロードに失敗しました", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+           
 
         }
 
