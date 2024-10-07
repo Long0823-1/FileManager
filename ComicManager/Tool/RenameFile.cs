@@ -11,18 +11,24 @@ namespace ComicManager.Tool
     {
         public RenameFile()
         {
+            // ここでApp.xaml.csで初期化しているMainViewModelを代入。
             _vm = (App.Current as App).MainViewModel;
         }
+        
+        // 初期化していないMainViewModel
         MainViewModel _vm;
 
-        private string renameSuccess = string.Empty;
-        private string renameError = string.Empty;
+        // 成功、失敗したファイル名を格納
+        string renameSuccess = string.Empty;
+        string renameError = string.Empty;
 
         public bool RenameMethod(string filePath, string newerName)
         {
             try
             {
                 _vm.loadingFileName = filePath;
+
+                // VB.NETのクラスを参照
                 FileSystem.RenameFile(filePath, newerName);
             }
             catch (Exception ex)
@@ -38,6 +44,7 @@ namespace ComicManager.Tool
         {
             Loading loading = new Loading();
             loading.Show();
+
             var result = await Task.Run(() =>
             {
                 if (FilesListView.Count > 0)
@@ -57,12 +64,10 @@ namespace ComicManager.Tool
                         if (renameResult)
                         {
                             renameSuccess += newerName + "\n";
-                            //MessageBox.Show($"リネームに成功しました！\n{newerName}", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                         }
                         else
                         {
                             renameError += newerName + "\n";
-                            //MessageBox.Show($"リネームに失敗しました\n{newerName}", "Information", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
                 }
@@ -141,6 +146,7 @@ namespace ComicManager.Tool
         {
             Loading loading = new Loading();
             loading.Show();
+
             if (FilesListView.Count > 0)
             {
                 var result = await Task.Run(() =>

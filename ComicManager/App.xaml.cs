@@ -9,6 +9,7 @@ namespace ComicManager
     /// </summary>
     public partial class App : Application
     {
+        // これ大事
         public MainViewModel MainViewModel = new MainViewModel();
     }
 }

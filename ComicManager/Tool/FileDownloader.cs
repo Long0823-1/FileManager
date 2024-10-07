@@ -1,33 +1,38 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Net.Http;
+using System.Windows.Threading;
 
 namespace ComicManager.Tool
 {
     public class FileDownloader
     {
-        public static double now = 0;
-        public static bool IsEnd = false;
-        public static string WhatName = "";
-        public static long TotalBytesRead = 0;
-        public static long TotalBytes = 0;
-        public async Task<MemoryStream> GetContent(string Url,string Assets)
+
+        public FileDownloader()
         {
-            IsEnd = false;
-            return await Task.Run(async () =>
+            _vm = (App.Current as App).MainViewModel;
+        }
+        MainViewModel _vm;
+        
+        public async Task<bool> GetContent(string Url)
+        {
+            DownloadNow dlNow = new DownloadNow();
+            dlNow.Show();
+
+            var result = await Task.Run(async () =>
             {
-                
                 using (HttpClient client = new HttpClient())
                 {
                     string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0";
                     client.DefaultRequestHeaders.Add("User-Agent", userAgent);
 
-                    if(Assets != "")
-                    {
-                        client.DefaultRequestHeaders.Add("Accept", Assets);
-                    }
+                    /* if(Assets != "")
+                     {
+                         client.DefaultRequestHeaders.Add("Accept", Assets);
+                     }*/
 
-                    WhatName = Path.GetFileName(Url);
+                    _vm.DownloadUrlName = Path.GetFileName(Url);
                     using (HttpResponseMessage response = await client.GetAsync(new Uri(Url), HttpCompletionOption.ResponseHeadersRead))
                     {
                         response.EnsureSuccessStatusCode();
@@ -47,18 +52,29 @@ namespace ComicManager.Tool
                                 if (totalBytes.HasValue)
                                 {
                                     double percentage = (double)totalBytesRead / totalBytes.Value * 100;
-                                    now = percentage;
-                                    TotalBytes = (long)totalBytes;
-                                    TotalBytesRead = totalBytesRead;
+
+                                    _vm.DownloadPercentage = $"{(int)percentage}%";
+                                    _vm.TotalBytes = (long)totalBytes;
+                                    _vm.TotalBytesRead = (int)percentage;
+
                                     Debug.WriteLine($"Downloaded {totalBytesRead} of {totalBytes} bytes. {percentage:F2}% complete...");
                                 }
                             }
-                            IsEnd = true;
-                            return ms;
+                            try
+                            {
+                                ZipFile.ExtractToDirectory(ms, @".\", true);
+                                return true;
+                            }
+                            catch (Exception ex)
+                            {
+                                return false;
+                            }
                         }
                     }
                 }
             });
+            dlNow.Close();
+            return result;
         }
     }
 }

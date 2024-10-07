@@ -10,9 +10,12 @@ namespace ComicManager.Tool
         public DownloadNow()
         {
             InitializeComponent();
-            Bar.Maximum = 100;
-            Bar.Minimum = 0;
+            _vm = (App.Current as App).MainViewModel;
+            this.DataContext = _vm;
+
         }
+        MainViewModel _vm;
+
         /// <summary>
         /// メニューのハンドル取得
         /// </summary>
@@ -51,41 +54,9 @@ namespace ComicManager.Tool
         /// プログレスバー関連
         /// </summary>
         /// <returns></returns>
-        private async Task LoopTask() => await Task.Run(() =>
-                                            {
-                                                bool end = false;
-                                                string name = String.Empty;
-                                                string DownloadNow = String.Empty;
-                                                while (true)
-                                                {
-                                                    this.Dispatcher.Invoke((Action)(() =>
-                                                    {
-                                                        DownloadNow = FileDownloader.WhatName + "をダウンロード中";
-                                                        Title = DownloadNow;
-                                                        downloadRead.Content = DownloadNow;
-                                                        downloadBytes.Content = (FileDownloader.TotalBytes) + "b";
-                                                    }));
-                                                    this.Dispatcher.Invoke((Action)(() =>
-                                                    {
-                                                        Bar.Value = FileDownloader.now;
-                                                        downloadLabel.Content = $"{Bar.Value:F0}%";
-                                                    }));
-                                                    this.Dispatcher.Invoke((Action)(() =>
-                                                    {
-                                                        name = FileDownloader.WhatName;
-                                                        end = FileDownloader.IsEnd;
-                                                    }));
-                                                    if (name.Contains("ffmpeg") && end == true)
-                                                    {
-                                                        break;
-                                                    }
-
-                                                }
-                                            });
-
+        
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            await LoopTask();
         }
     }
 }

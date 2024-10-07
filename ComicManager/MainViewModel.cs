@@ -54,6 +54,7 @@ namespace ComicManager
             get
             {
                 _Path = System.IO.Path.GetFullPath(_Path);
+                ConvPath = System.IO.Path.GetFullPath(_Path);
                 return _Path;
             }
             set => SetProperty(ref _Path, value, nameof(Path));
@@ -83,8 +84,12 @@ namespace ComicManager
         private string _PreviousPath = string.Empty;
         public string PreviousPath
         {
-            get => _PreviousPath;
-            set=>SetProperty(ref _PreviousPath, value, nameof(PreviousPath));
+            get
+            {
+                ConvPath = System.IO.Path.GetFullPath(_Path);
+                return _PreviousPath;
+            }
+            set => SetProperty(ref _PreviousPath, value, nameof(PreviousPath));
         }
 
         private bool _isLoading = true;
@@ -103,6 +108,49 @@ namespace ComicManager
             set => SetProperty(ref _loadingFileName, value, nameof(loadingFileName));
         }
 
-        // private string OrderByMode = 
+        private string _DownloadPercentage = "0%";
+        public string DownloadPercentage
+        {
+            get => _DownloadPercentage;
+            set => SetProperty(ref _DownloadPercentage, value, nameof(DownloadPercentage));
+        }
+
+        private string _DownloadUrlName = "";
+        public string DownloadUrlName
+        {
+            get => "ダウンロード中:" + _DownloadUrlName;
+            set => SetProperty(ref _DownloadUrlName, value, nameof(DownloadUrlName));
+        }
+        private double _TotalBytes = 0;
+        public double TotalBytes
+        {
+            get
+            {
+                _TotalBytes = (int)((_TotalBytes / 1024) / 1024);
+                return _TotalBytes;
+            }
+
+            set => SetProperty(ref _TotalBytes, value, nameof(TotalBytes));
+        }
+        private int _TotalBytesRead = 0;
+        public int TotalBytesRead
+        {
+            get
+            {
+                return _TotalBytesRead;
+            }
+            set => SetProperty(ref _TotalBytesRead, value, nameof(TotalBytesRead));
+        }
+        private string _ConvPath = "";
+        public string ConvPath
+        {
+            get
+            {
+                _ConvPath = _Path.Replace(@"\", " > ");
+                return _ConvPath;
+            }
+            set => SetProperty(ref _ConvPath, value, nameof(ConvPath));
+        }
+
     }
 }

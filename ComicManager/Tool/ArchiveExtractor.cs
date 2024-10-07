@@ -189,10 +189,15 @@ namespace ComicManager
                 {
                     result = PdfToJpg(filePath); // pdfからjpgに変換
                 }
-                else if (Path.GetExtension(filePath).ToLower() switch { ".mp4" or ".m4v" or ".mov" or ".mkv" or ".wmv" or ".ts" => true, ".png" or ".jpg" or ".zip" or ".rar" or ".7z" => false })
+                else if (Path.GetExtension(filePath).ToLower()
+                switch
+                {
+                    ".mp4" or ".m4v" or ".mov" or ".mkv" or ".wmv" or ".ts" => true,
+                    ".heic" or ".webp" or ".png" or ".jpg" or ".zip" or ".rar" or ".7z" => false
+                })
                 {
                     string path = string.Empty;
-                    path = @".\ffmpeg.exe";
+                    path = @""".\ffmpeg-7.1-essentials_build\bin\ffmpeg.exe""";
                     string outputDir = System.IO.Path.Combine(CachePath, System.IO.Path.GetFileNameWithoutExtension(filePath));
                     string output = Path.Combine(outputDir, "cover.png");
                     Directory.CreateDirectory(outputDir);
@@ -202,7 +207,7 @@ namespace ComicManager
                         var startInfo = new System.Diagnostics.ProcessStartInfo()
                         {
                             FileName = path,
-                            Arguments = @$" -i ""{filePath}"" -vf thumbnail=300 -frames:v 1 ""{output}""",
+                            Arguments = @$" -i ""{filePath}"" -vf thumbnail=60 -frames:v 1 ""{output}""",
                             UseShellExecute = false,
                             CreateNoWindow = true,
 
@@ -233,7 +238,7 @@ namespace ComicManager
 
         private async static Task<string> CoverImageIsExist(string output)
         {
-            return await Task.Run(async() =>
+            return await Task.Run(async () =>
             {
                 while (!File.Exists(output)) ;
                 try

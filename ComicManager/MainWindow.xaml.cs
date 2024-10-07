@@ -275,13 +275,31 @@ namespace ComicManager
 
         }
 
-        private void FFmpeg_Download_Click(object sender, RoutedEventArgs e)
+        private async void FFmpeg_Download_Click(object sender, RoutedEventArgs e)
         {
+            await GetContents("https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip", "FFMPEG");
 
         }
 
-        private void SevenZip_Download_Click(object sender, RoutedEventArgs e)
+        private async Task GetContents(string url,string filename)
         {
+            FileDownloader dl = new FileDownloader();
+            this.IsEnabled = false;
+
+            if (await dl.GetContent(url))
+            {
+                MessageBox.Show($"{filename}のダウンロードに成功しました");
+            }
+            else
+            {
+                MessageBox.Show("しっぱい");
+            }
+            this.IsEnabled = true;
+        }
+
+        private async void SevenZip_Download_Click(object sender, RoutedEventArgs e)
+        {
+            //await GetContents("https://www.7-zip.org/a/7z2408-x64.exe","sevenZip");
 
         }
     }
