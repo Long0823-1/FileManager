@@ -56,7 +56,7 @@ jobs:
       run: Remove-Item -path $env:Wap_Project_Directory\GitHubActionsWorkflow.pfx
 
     - name: Upload artifact for deployment job
-      uses: actions/upload-artifact@v3
+      uses: actions/download-artifact@v3
       with:
         name: .net-app
         path: $Wap_Project_Directory/bin
