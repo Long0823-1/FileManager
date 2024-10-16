@@ -55,8 +55,8 @@ jobs:
     - name: Remove the pfx
       run: Remove-Item -path $env:Wap_Project_Directory\GitHubActionsWorkflow.pfx
 
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+    - name: Upload artifact for deployment job
+      uses: actions/upload-artifact@v2
       with:
-        name: MSIX Package
-        path: ${{ env.Wap_Project_Directory }}\AppPackages
+        name: .net-app
+        path: $Wap_Project_Directory/bin
