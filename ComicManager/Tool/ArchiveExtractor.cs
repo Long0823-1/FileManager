@@ -86,7 +86,7 @@ namespace ComicManager
         /// <return>サムネイルのある場所を返す</returns>
         private string ExtractArchive(string path)
         {
-            CreateDirectory(); // とりあえずディレクトリを作る
+            CreateDirectory(); // とりあえずキャッシュディレクトリを作る
 
             try
             {
