@@ -2,13 +2,16 @@
 using SkiaSharp;
 using System.Diagnostics;
 using System.IO;
+using System.Windows.Media.Imaging;
 
 namespace ComicManager
 {
     public class ArchiveExtractor
     {
-        string sevenZip_x86_x64 = @"C:\Program Files\7-Zip\7z.dll";
-        string sevenZip_x86 = @"C:\Program Files (x86)\7-Zip\7z.dll";
+        string sevenZip_x86_x64 = Path.Combine(Environment.GetEnvironmentVariable("SystemDrive")
+, @"Program Files\7-Zip\7z.dll");
+        string sevenZip_x86 = Path.Combine(Environment.GetEnvironmentVariable("SystemDrive")
+, @"Program Files (x86)\7-Zip\7z.dll");
         public ArchiveExtractor()
         {
             vm = (App.Current as App).MainViewModel;
@@ -24,6 +27,19 @@ namespace ComicManager
             }
 
         }
+        public static BitmapImage LoadImage(string imagePath)
+        {
+            var bitmap = new BitmapImage();
+            using (var stream = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                bitmap.BeginInit();
+                bitmap.CacheOption = BitmapCacheOption.OnLoad; // メモリにロード
+                bitmap.StreamSource = stream;
+                bitmap.EndInit();
+            }
+            return bitmap;
+        }
+
         /// <summary>
         /// 画像かどうかを判別
         /// </summary>
@@ -198,9 +214,9 @@ namespace ComicManager
                 {
                     string path = string.Empty;
                     path = @""".\ffmpeg-7.1-essentials_build\bin\ffmpeg.exe""";
-                    
+
                     string outputDir = System.IO.Path.Combine(CachePath, System.IO.Path.GetFileNameWithoutExtension(filePath));
-                    
+
                     if (File.Exists(@".\.ThumbSaveOn"))
                     {
                         outputDir = System.IO.Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath));
@@ -221,7 +237,7 @@ namespace ComicManager
                         };
                         var isEnd = System.Diagnostics.Process.Start(startInfo);
 
-                        result = await CoverImageIsExist(output);
+                        result = await CoverImageIsExists(output);
 
                     }
                     else
@@ -235,7 +251,7 @@ namespace ComicManager
                     result = ExtractArchive(filePath); // アーカイブから画像を解凍
                 }
 
-                vm.CoverImage = MainViewModel.LoadImage(result); // 画像をStreamに変換
+                vm.CoverImage = LoadImage(result); // 画像をStreamに変換
             }
             catch (Exception ex)
             {
@@ -243,18 +259,18 @@ namespace ComicManager
             }
         }
 
-        private async static Task<string> CoverImageIsExist(string output)
+        private async static Task<string> CoverImageIsExists(string output)
         {
             return await Task.Run(async () =>
             {
                 while (!File.Exists(output)) ;
                 try
                 {
-                    MainViewModel.LoadImage(output);
+                    LoadImage(output);
                 }
                 catch (System.IO.IOException)
                 {
-                    return await CoverImageIsExist(output);
+                    return await CoverImageIsExists(output);
                 }
                 return output;
             });

@@ -20,19 +20,7 @@ namespace ComicManager
             public string fileName { get; set; }
             public string maxBytes { get; set; }
             public string dateTime { get; set; }
-        }
-        public static BitmapImage LoadImage(string imagePath)
-        {
-            var bitmap = new BitmapImage();
-            using (var stream = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                bitmap.BeginInit();
-                bitmap.CacheOption = BitmapCacheOption.OnLoad; // メモリにロード
-                bitmap.StreamSource = stream;
-                bitmap.EndInit();
-            }
-            return bitmap;
-        }
+        }     
 
         private BitmapImage _CoverImage = new BitmapImage();
         public BitmapImage CoverImage

@@ -20,7 +20,7 @@ namespace ComicManager
             viewModel = (App.Current as App).MainViewModel;
             this.DataContext = viewModel;
             extractor = new ArchiveExtractor();
-            viewModel.CoverImage = LoadImage(@"images\none.png");
+            viewModel.CoverImage = ArchiveExtractor.LoadImage(@"images\none.png");
             GetFilesList(@"C:\");
         }
 
