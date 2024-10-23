@@ -198,7 +198,14 @@ namespace ComicManager
                 {
                     string path = string.Empty;
                     path = @""".\ffmpeg-7.1-essentials_build\bin\ffmpeg.exe""";
+                    
                     string outputDir = System.IO.Path.Combine(CachePath, System.IO.Path.GetFileNameWithoutExtension(filePath));
+                    
+                    if (File.Exists(@".\.ThumbSaveOn"))
+                    {
+                        outputDir = System.IO.Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath));
+                    }
+
                     string output = Path.Combine(outputDir, "cover.png");
                     Directory.CreateDirectory(outputDir);
 

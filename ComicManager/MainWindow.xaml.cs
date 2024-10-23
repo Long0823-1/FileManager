@@ -143,6 +143,12 @@ namespace ComicManager
 
         private async void GetFilesList(string _Path, bool force = false)
         {
+            if(File.Exists(@".\.ThumbSaveOn"))
+            {
+                saveItemIsChecked = true;
+                ThumbSave.IsChecked = true;
+            }
+            
             GetFilesList getFiles = new GetFilesList();
             await getFiles.FilesList(_Path, force);
 
@@ -281,7 +287,7 @@ namespace ComicManager
 
         }
 
-        private async Task GetContents(string url,string filename)
+        private async Task GetContents(string url, string filename)
         {
             FileDownloader dl = new FileDownloader();
             this.IsEnabled = false;
@@ -299,7 +305,35 @@ namespace ComicManager
 
         private async void SevenZip_Download_Click(object sender, RoutedEventArgs e)
         {
-            //await GetContents("https://www.7-zip.org/a/7z2408-x64.exe","sevenZip");
+
+            MessageBox.Show("自動でダウンロードが始まります。\n完了後、手動でインストールしてください。", "インフォメーション", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            var startInfo = new System.Diagnostics.ProcessStartInfo()
+            {
+                FileName = "https://www.7-zip.org/a/7z2408-x64.exe",
+                UseShellExecute = true,
+                CreateNoWindow = true,
+            };
+            System.Diagnostics.Process.Start(startInfo);
+        }
+
+        private bool saveItemIsChecked = false;
+
+        private void Thumb_Save_Click(object sender, RoutedEventArgs e)
+        {
+            var thumb_Save_MenuItem = (sender as MenuItem);
+
+            if (!saveItemIsChecked)
+            {
+                saveItemIsChecked = true;
+                File.Create(@".\.ThumbSaveOn");
+            }
+            else
+            {
+                saveItemIsChecked = false;
+                File.Delete(@".\.ThumbSaveOn");
+            }
+
 
         }
     }

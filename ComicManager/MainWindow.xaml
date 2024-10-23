@@ -6,8 +6,8 @@
     xmlns:local="clr-namespace:ComicManager"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="ファイル一括管理"
-    Width="1000"
-    Height="800"
+    Width="900"
+    Height="600"
     Closed="Window_Closed"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
@@ -26,6 +26,9 @@
             <MenuItem Header="ツール">
                 <MenuItem Header="FFMPEGをダウンロード" Click="FFmpeg_Download_Click"/>
                 <MenuItem Header="7-Zipをインストールする" Click="SevenZip_Download_Click"/>
+            </MenuItem>
+            <MenuItem Header="設定">
+                <MenuItem x:Name="ThumbSave"  Header="動画のサムネイルを常に保存する" IsCheckable="True" Click="Thumb_Save_Click"></MenuItem>
             </MenuItem>
         </Menu>
         <Grid Margin="10" Background="#f4f4f4">
@@ -62,8 +65,8 @@
                             Grid.Column="0"
                             Margin="50,5,10,5"
                             Padding="5"
-                            Background="#ffffff"
-                            BorderBrush="#ccc"
+                            BorderThickness="0"
+                            Background="#e0e0e0"
                             FontSize="14"
                             Foreground="Gray"
                             Text=""
