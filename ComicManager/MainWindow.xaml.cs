@@ -1,13 +1,14 @@
-﻿using ComicManager.Tool;
+﻿using FileManager;
+using FileManager.Tool;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using static ComicManager.MainViewModel;
+using static FileManager.MainViewModel;
 
-namespace ComicManager
+namespace FileManager
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -103,6 +104,22 @@ namespace ComicManager
                 RenameFile renameFile = new RenameFile();
 
                 renameFile.LeftAddStr(FilesListView.SelectedItems, strEntry.Text);
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
+
+        }
+
+        private void RightStr_Click()
+        {
+            try
+            {
+                RenameFile renameFile = new RenameFile();
+
+                renameFile.RightAddStr(FilesListView.SelectedItems, strEntry.Text);
 
             }
             catch (Exception ex)
@@ -236,20 +253,19 @@ namespace ComicManager
 
         private void Conv_Click(object sender, RoutedEventArgs e)
         {
-            if (LeftStr.IsChecked == true)
+            if ((bool)LeftStr.IsChecked)
             {
                 LeftStr_Click();
             }
-            else if (RightStr.IsChecked == true)
+            else if ((bool)RightStr.IsChecked)
             {
-                //loading.Show();
-                //RightStr_Click();
+                RightStr_Click();
             }
-            else if (DeleteStr.IsChecked == true)
+            else if ((bool)DeleteStr.IsChecked)
             {
                 DeleteStr_Click();
             }
-            else if (ExchangeStr.IsChecked == true)
+            else if ((bool)ExchangeStr.IsChecked)
             {
                 ExchangeStr_Click();
             }
@@ -275,7 +291,7 @@ namespace ComicManager
             }
             else
             {
-                var filteredFiles = new ObservableCollection<FilesListClass>(_FilesList.Where(fileName => fileName.fileName.Contains(searchText)));
+                ObservableCollection<FilesListClass> filteredFiles = new ObservableCollection<FilesListClass>(_FilesList.Where(fileName => fileName.fileName.Contains(searchText)));
                 viewModel.FilesList = filteredFiles;
             }
 
@@ -283,8 +299,8 @@ namespace ComicManager
 
         private async void FFmpeg_Download_Click(object sender, RoutedEventArgs e)
         {
+            // ここはurlが変わることがないため、直接指定
             await GetContents("https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip", "FFMPEG");
-
         }
 
         private async Task GetContents(string url, string filename)
@@ -298,7 +314,7 @@ namespace ComicManager
             }
             else
             {
-                MessageBox.Show("しっぱい");
+                MessageBox.Show("失敗");
             }
             this.IsEnabled = true;
         }
@@ -335,6 +351,13 @@ namespace ComicManager
             }
 
 
+        }
+
+        private void Str_Change_Button(object sender, RoutedEventArgs e)
+        {
+            var temp = strEntry.Text;
+            strEntry.Text = ExchangeStrEntry.Text;
+            ExchangeStrEntry.Text = temp;   
         }
     }
 }

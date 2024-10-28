@@ -1,7 +1,8 @@
-﻿using System.Runtime.InteropServices;
+﻿using FileManager;
+using System.Runtime.InteropServices;
 using System.Windows;
 
-namespace ComicManager.Tool
+namespace FileManager.Tool
 {
     /// <summary>
     /// Loading.xaml の相互作用ロジック

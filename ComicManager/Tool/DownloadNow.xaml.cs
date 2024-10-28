@@ -1,6 +1,7 @@
-﻿using System.Runtime.InteropServices;
+﻿using FileManager;
+using System.Runtime.InteropServices;
 using System.Windows;
-namespace ComicManager.Tool
+namespace FileManager.Tool
 {
     /// <summary>
     /// DownloadNow.xaml の相互作用ロジック

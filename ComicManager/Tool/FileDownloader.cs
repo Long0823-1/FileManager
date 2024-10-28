@@ -1,20 +1,22 @@
-﻿using System.Diagnostics;
+﻿using FileManager;
+using FileManager.Tool;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Windows.Threading;
 
-namespace ComicManager.Tool
+namespace FileManager.Tool
 {
     public class FileDownloader
     {
 
         public FileDownloader()
         {
-            _vm = (App.Current as App).MainViewModel;
+            _vm = (System.Windows.Application.Current as App).MainViewModel;
         }
         MainViewModel _vm;
-        
+
         public async Task<bool> GetContent(string Url)
         {
             DownloadNow dlNow = new DownloadNow();

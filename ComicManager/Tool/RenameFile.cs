@@ -1,20 +1,22 @@
-﻿using Microsoft.VisualBasic.FileIO;
+﻿using FileManager;
+using FileManager.Tool;
+using Microsoft.VisualBasic.FileIO;
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
-using static ComicManager.MainViewModel;
+using static FileManager.MainViewModel;
 
-namespace ComicManager.Tool
+namespace FileManager.Tool
 {
     public class RenameFile
     {
         public RenameFile()
         {
             // ここでApp.xaml.csで初期化しているMainViewModelを代入。
-            _vm = (App.Current as App).MainViewModel;
+            _vm = (Application.Current as App).MainViewModel;
         }
-        
+
         // 初期化していないMainViewModel
         MainViewModel _vm;
 
@@ -80,6 +82,48 @@ namespace ComicManager.Tool
                 ResultMessage(); // 結果を表示
             }
         }
+
+        public async void RightAddStr(IList FilesListView, string str)
+        {
+            Loading loading = new Loading();
+            loading.Show();
+
+            var result = await Task.Run(() =>
+            {
+                if (FilesListView.Count > 0)
+                {
+                    bool renameResult = false;
+                    string newerName = string.Empty;
+                    string filePath = string.Empty;
+                    RenameFile rename = new RenameFile();
+
+                    foreach (var item in FilesListView)
+                    {
+                        filePath = (item as FilesListClass).filePath;
+                        newerName = Path.GetFileNameWithoutExtension(filePath) + str + Path.GetExtension(filePath);
+                        _vm.loadingFileName = "変換中：" + newerName;
+
+                        renameResult = rename.RenameMethod(filePath, newerName);
+                        if (renameResult)
+                        {
+                            renameSuccess += newerName + "\n";
+                        }
+                        else
+                        {
+                            renameError += newerName + "\n";
+                        }
+                    }
+                }
+                return true;
+            });
+
+            if (result)
+            {
+                loading.Close();
+                ResultMessage(); // 結果を表示
+            }
+        }
+
         public async void DeleteStr(IList FilesListView, string str)
         {
             Loading loading = new Loading();

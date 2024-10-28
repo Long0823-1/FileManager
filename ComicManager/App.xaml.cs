@@ -1,8 +1,9 @@
-﻿using System.Configuration;
+﻿using FileManager;
+using System.Configuration;
 using System.Data;
 using System.Windows;
 
-namespace ComicManager
+namespace FileManager
 {
     /// <summary>
     /// Interaction logic for App.xaml

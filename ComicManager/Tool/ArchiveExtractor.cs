@@ -1,10 +1,11 @@
-﻿using SevenZip;
+﻿using FileManager;
+using SevenZip;
 using SkiaSharp;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Media.Imaging;
 
-namespace ComicManager
+namespace FileManager.Tool
 {
     public class ArchiveExtractor
     {
@@ -14,7 +15,7 @@ namespace ComicManager
 , @"Program Files (x86)\7-Zip\7z.dll");
         public ArchiveExtractor()
         {
-            vm = (App.Current as App).MainViewModel;
+            vm = (System.Windows.Application.Current as App).MainViewModel;
         }
         MainViewModel vm;
         private string CachePath = $@"{Path.GetTempPath()}\ComicManager\caches";
@@ -168,12 +169,12 @@ namespace ComicManager
                 stream.Read(fileData, 0, fileData.Length);
                 string base64 = Convert.ToBase64String(fileData);
 
-                string outputDir = System.IO.Path.Combine(CachePath, System.IO.Path.GetFileNameWithoutExtension(filePath));
+                string outputDir = Path.Combine(CachePath, Path.GetFileNameWithoutExtension(filePath));
                 Directory.CreateDirectory(outputDir);
 
                 var image = PDFtoImage.Conversion.ToImage(base64, 0);
                 var skImage = SKImage.FromBitmap(image);
-                string outputPath = System.IO.Path.Combine(outputDir, $"cover.jpg");
+                string outputPath = Path.Combine(outputDir, $"cover.jpg");
 
                 using (var saveStream = File.Create(outputPath))
                 {
@@ -209,17 +210,17 @@ namespace ComicManager
                 switch
                 {
                     ".mp4" or ".m4v" or ".mov" or ".mkv" or ".wmv" or ".ts" => true,
-                    ".heic" or ".webp" or ".png" or ".jpg" or ".zip" or ".rar" or ".7z" => false
+                    ".heic" or ".webp" or ".png" or ".jpg" or ".zip" or ".rar" or ".7z" or ".gif" => false
                 })
                 {
                     string path = string.Empty;
                     path = @""".\ffmpeg-7.1-essentials_build\bin\ffmpeg.exe""";
 
-                    string outputDir = System.IO.Path.Combine(CachePath, System.IO.Path.GetFileNameWithoutExtension(filePath));
+                    string outputDir = Path.Combine(CachePath, Path.GetFileNameWithoutExtension(filePath));
 
                     if (File.Exists(@".\.ThumbSaveOn"))
                     {
-                        outputDir = System.IO.Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath));
+                        outputDir = Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath));
                     }
 
                     string output = Path.Combine(outputDir, "cover.png");
@@ -227,7 +228,7 @@ namespace ComicManager
 
                     if (!File.Exists(output))
                     {
-                        var startInfo = new System.Diagnostics.ProcessStartInfo()
+                        var startInfo = new ProcessStartInfo()
                         {
                             FileName = path,
                             Arguments = @$" -i ""{filePath}"" -vf thumbnail=60 -frames:v 1 ""{output}""",
@@ -235,7 +236,7 @@ namespace ComicManager
                             CreateNoWindow = true,
 
                         };
-                        var isEnd = System.Diagnostics.Process.Start(startInfo);
+                        var isEnd = Process.Start(startInfo);
 
                         result = await CoverImageIsExists(output);
 
@@ -268,7 +269,7 @@ namespace ComicManager
                 {
                     LoadImage(output);
                 }
-                catch (System.IO.IOException)
+                catch (IOException)
                 {
                     return await CoverImageIsExists(output);
                 }

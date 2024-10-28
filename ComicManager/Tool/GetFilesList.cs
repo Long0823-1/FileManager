@@ -1,17 +1,18 @@
-﻿using ComicManager.Tool;
+﻿using FileManager;
+using FileManager.Tool;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
-using static ComicManager.MainViewModel;
+using static FileManager.MainViewModel;
 
-namespace ComicManager
+namespace FileManager.Tool
 {
     public class GetFilesList
     {
         public GetFilesList()
         {
-            vm = (App.Current as App).MainViewModel;
+            vm = (Application.Current as App).MainViewModel;
             //vm.FilesList.CollectionChanged += FilesList_CollectionChanged;
 
         }
@@ -59,12 +60,12 @@ namespace ComicManager
                     MessageBox.Show("Error", "ロードに失敗しました", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-            catch (System.UnauthorizedAccessException UnauthError)
+            catch (UnauthorizedAccessException UnauthError)
             {
                 loading.Close();
-                MessageBox.Show(UnauthError.Message,"Error" );
+                MessageBox.Show(UnauthError.Message, "Error");
             }
-           
+
 
         }
 
@@ -89,7 +90,7 @@ namespace ComicManager
                 _tempList.Add(new FilesListClass { filePath = file, fileName = filename, dateTime = File.GetCreationTime(file).ToString("yyyy/MM/dd（dddd）"), maxBytes = "" }); //配列にクラスを格納
             }
             ObservableCollection<FilesListClass> orderBy = new ObservableCollection<FilesListClass>(_tempList.OrderBy(x => x.filePath));
-            orderBy.Insert(0, (new() { fileName = "..", filePath = @"\.." }));
+            orderBy.Insert(0, new() { fileName = "..", filePath = @"\.." });
             vm.FilesList = orderBy;
         }
     }

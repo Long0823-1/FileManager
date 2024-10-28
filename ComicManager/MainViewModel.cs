@@ -2,9 +2,9 @@
 using System.IO;
 using System.Windows.Media.Imaging;
 
-namespace ComicManager
+namespace FileManager
 {
-    public class MainViewModel : Prism.Mvvm.BindableBase
+    public class MainViewModel : BindableBase
     {
         public MainViewModel()
         {
@@ -20,7 +20,7 @@ namespace ComicManager
             public string fileName { get; set; }
             public string maxBytes { get; set; }
             public string dateTime { get; set; }
-        }     
+        }
 
         private BitmapImage _CoverImage = new BitmapImage();
         public BitmapImage CoverImage
@@ -114,7 +114,7 @@ namespace ComicManager
         {
             get
             {
-                _TotalBytes = (int)((_TotalBytes / 1024) / 1024);
+                _TotalBytes = (int)(_TotalBytes / 1024 / 1024);
                 return _TotalBytes;
             }
 
