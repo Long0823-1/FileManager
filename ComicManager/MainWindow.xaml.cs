@@ -18,17 +18,30 @@ namespace FileManager
         public MainWindow()
         {
             InitializeComponent();
+
+            // AppクラスのMainViewModelを使用
             viewModel = (App.Current as App).MainViewModel;
+
             this.DataContext = viewModel;
             extractor = new ArchiveExtractor();
             viewModel.CoverImage = ArchiveExtractor.LoadImage(@"images\none.png");
+            
             GetFilesList(@"C:\");
         }
 
+        // ViewModel
         MainViewModel viewModel;
+
+        // 解凍専門クラス
         ArchiveExtractor extractor;
 
         bool isOrderByName = true;
+
+        /// <summary>
+        /// ヘッダーをクリックされた時に並び替えする
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FileName_Click(object sender, RoutedEventArgs e)
         {
             if (isOrderByName)
@@ -46,6 +59,12 @@ namespace FileManager
         }
 
         bool isOrderBy = true;
+
+        /// <summary>
+        /// ヘッダーをクリックされた時に並び替えする
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CreateTime_Click(object sender, RoutedEventArgs e)
         {
             if (isOrderBy)
@@ -62,6 +81,11 @@ namespace FileManager
             }
         }
 
+        /// <summary>
+        /// フォルダパスをユーザー側で指定
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FolderOpen_Click(object sender, RoutedEventArgs e)
         {
             using (var dlg = new CommonOpenFileDialog())
@@ -77,6 +101,12 @@ namespace FileManager
         }
 
         private string filePath;
+
+        /// <summary>
+        /// 選択しているファイルが変わるたびにサムネを表示する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
@@ -92,6 +122,7 @@ namespace FileManager
             catch (Exception) { }
             finally
             {
+
             }
 
         }
@@ -158,6 +189,11 @@ namespace FileManager
             }
         }
 
+        /// <summary>
+        /// ファイルリストを取得
+        /// </summary>
+        /// <param name="_Path">ファイルパス</param>
+        /// <param name="force">強制的に更新するかを指定</param>
         private async void GetFilesList(string _Path, bool force = false)
         {
             if(File.Exists(@".\.ThumbSaveOn"))
@@ -171,6 +207,11 @@ namespace FileManager
 
         }
 
+        /// <summary>
+        /// ファイルをダブルクリックしたとき、どのような処理をするかを決めるメソッド
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FilesListView_PreviewMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (Path.HasExtension(filePath))
@@ -179,6 +220,8 @@ namespace FileManager
             }
             else
             {
+                // 一つ階層を下がる際は「\\..」を指定
+                // （PathクラスのGetFullPath関数を使えば、整ったパス名に変換してくれる）
                 if (filePath == "\\..")
                 {
                     string fullPath = viewModel.Path + filePath;
@@ -191,6 +234,10 @@ namespace FileManager
             }
         }
 
+        /// <summary>
+        /// 実際にファイルを開く際のメソッド
+        /// </summary>
+        /// <param name="isExplorer">ファイルがあるディレクトリを開くかどうかを指定</param>
         private void FileOpen(bool isExplorer = false)
         {
             string path = string.Empty;
@@ -214,11 +261,21 @@ namespace FileManager
             System.Diagnostics.Process.Start(startInfo);
         }
 
+        /// <summary>
+        /// 右クリックした際のファイルを開くボタン用メソッド
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Open_Click(object sender, RoutedEventArgs e)
         {
             FileOpen();
         }
 
+        /// <summary>
+        /// 右クリックした際のファイル削除用のボタンのメソッド
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Delete_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -237,20 +294,41 @@ namespace FileManager
             }
         }
 
+        /// <summary>
+        /// ファイル名をクリップボードにコピー
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FileNameCopy_Click(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText(Path.GetFileNameWithoutExtension(filePath));
         }
+
+        /// <summary>
+        /// 右クリックした際のファイルのあるディレクトリを開くボタン用メソッド
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FileDirectoryOpen_Click(object sender, RoutedEventArgs e)
         {
             FileOpen(true);
         }
 
+        /// <summary>
+        /// Windowのクローズ時に実行するメソッド
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Window_Closed(object sender, EventArgs e)
         {
 
         }
 
+        /// <summary>
+        /// ファイル名を一括処理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Conv_Click(object sender, RoutedEventArgs e)
         {
             if ((bool)LeftStr.IsChecked)
@@ -274,6 +352,12 @@ namespace FileManager
         }
         private ObservableCollection<FilesListClass> _FilesList = new ObservableCollection<FilesListClass>();
         private bool onetime = true;
+        
+        /// <summary>
+        /// 検索窓内の文字列が変わるたびに検索結果を反映
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             string searchText = (sender as TextBox).Text;
@@ -303,6 +387,13 @@ namespace FileManager
             await GetContents("https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip", "FFMPEG");
         }
 
+
+        /// <summary>
+        /// ファイルダウンローダー
+        /// </summary>
+        /// <param name="url">URLを格納</param>
+        /// <param name="filename">ロード中の際に表示するファイル名</param>
+        /// <returns>なし</returns>
         private async Task GetContents(string url, string filename)
         {
             FileDownloader dl = new FileDownloader();
@@ -319,6 +410,11 @@ namespace FileManager
             this.IsEnabled = true;
         }
 
+        /// <summary>
+        /// 7-Zipのダウンロード先サイトを開くメソッド
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void SevenZip_Download_Click(object sender, RoutedEventArgs e)
         {
 
@@ -353,6 +449,11 @@ namespace FileManager
 
         }
 
+        /// <summary>
+        /// 文字入れ替えの文字列を相互に交換するボタン
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Str_Change_Button(object sender, RoutedEventArgs e)
         {
             var temp = strEntry.Text;

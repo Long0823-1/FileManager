@@ -1,5 +1,4 @@
-﻿using FileManager;
-using SevenZip;
+﻿using SevenZip;
 using SkiaSharp;
 using System.Diagnostics;
 using System.IO;
@@ -9,15 +8,16 @@ namespace FileManager.Tool
 {
     public class ArchiveExtractor
     {
-        string sevenZip_x86_x64 = Path.Combine(Environment.GetEnvironmentVariable("SystemDrive")
-, @"Program Files\7-Zip\7z.dll");
-        string sevenZip_x86 = Path.Combine(Environment.GetEnvironmentVariable("SystemDrive")
-, @"Program Files (x86)\7-Zip\7z.dll");
+        private string sevenZip_x86_x64 = 
+            Path.Combine(Environment.GetEnvironmentVariable("SystemDrive"), @"Program Files\7-Zip\7z.dll");
+        private string sevenZip_x86 = 
+            Path.Combine(Environment.GetEnvironmentVariable("SystemDrive"), @"Program Files (x86)\7-Zip\7z.dll");
+
         public ArchiveExtractor()
         {
-            vm = (System.Windows.Application.Current as App).MainViewModel;
+            _vm = (System.Windows.Application.Current as App).MainViewModel;
         }
-        MainViewModel vm;
+        MainViewModel _vm;
         private string CachePath = $@"{Path.GetTempPath()}\ComicManager\caches";
 
         private void CreateDirectory()
@@ -48,6 +48,7 @@ namespace FileManager.Tool
         /// <returns>画像かどうかをbool型で返す</returns>
         private static bool IsImageFile(string extension)
         {
+            // 画像ファイル化を拡張子を見て判断
             switch (extension)
             {
                 case ".jpg":
@@ -82,13 +83,10 @@ namespace FileManager.Tool
                 firstFile = extractor.ArchiveFileData[i];
 
                 // ファイルだった場合、即時に抜ける
-                if (Path.HasExtension(firstFile.FileName))
+                // 拡張子を見て、画像ファイルかどうかを判断
+                if (Path.HasExtension(firstFile.FileName) && IsImageFile(Path.GetExtension(firstFile.FileName).ToLower()))
                 {
-                    // 拡張子を見て、画像ファイルかどうかを判断
-                    if (IsImageFile(Path.GetExtension(firstFile.FileName).ToLower()))
-                    {
-                        break;
-                    }
+                    break;
                 }
 
                 Debug.WriteLine(firstFile.FileName);
@@ -152,9 +150,10 @@ namespace FileManager.Tool
                 GC.Collect();
             }
 
-            return "謎エラー";
+            return "Not Found";
 
         }
+
         /// <summary>
         /// pdfからjpgに変換
         /// </summary>
@@ -250,9 +249,13 @@ namespace FileManager.Tool
                 else
                 {
                     result = ExtractArchive(filePath); // アーカイブから画像を解凍
+                    if (result == "Not Found")
+                    {
+                        result = "";
+                    }
                 }
 
-                vm.CoverImage = LoadImage(result); // 画像をStreamに変換
+                _vm.CoverImage = LoadImage(result); // 画像をStreamに変換
             }
             catch (Exception ex)
             {

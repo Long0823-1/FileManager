@@ -11,7 +11,6 @@
     MaxWidth="450"
     MaxHeight="200"
     WindowStyle="None"
-    Background="DimGray"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d" Closed="Window_Closed"
     >
@@ -28,7 +27,6 @@
         <ProgressBar
             x:Name="Bar"
             Height="30"
-            Margin="45,61,45,20"
-            Foreground="GreenYellow" />
+            Margin="45,61,45,20" />
     </Grid>
 </Window>
