@@ -21,7 +21,6 @@
 
     <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="ファイル" />
             <MenuItem Header="ツール">
                 <MenuItem Header="FFMPEGをダウンロード" Click="FFmpeg_Download_Click"/>
                 <MenuItem Header="7-Zipをインストールする" Click="SevenZip_Download_Click"/>

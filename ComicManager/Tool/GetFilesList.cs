@@ -79,6 +79,7 @@ namespace FileManager.Tool
             ObservableCollection<FilesListClass> _tempList = new ObservableCollection<FilesListClass>();
 
             var files = Directory.GetFileSystemEntries(path);
+
             string filename = string.Empty;
             foreach (var file in files)
             {

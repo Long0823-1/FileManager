@@ -244,7 +244,7 @@ namespace FileManager
 
             if (isExplorer)
             {
-                path = @"C:\Windows\explorer.exe";
+                path = Path.Combine(Environment.GetEnvironmentVariable("SystemDrive"), @"Windows\explorer.exe");
             }
             else
             {
@@ -284,7 +284,7 @@ namespace FileManager
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error", $"エラーが発生しました\n{ex.Message}");
+                MessageBox.Show($"エラーが発生しました\n{ex.Message}");
             }
             finally
             {
