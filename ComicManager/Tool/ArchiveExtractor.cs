@@ -208,7 +208,7 @@ namespace FileManager.Tool
                 else if (Path.GetExtension(filePath).ToLower()
                 switch
                 {
-                    ".mp4" or ".m4v" or ".mov" or ".mkv" or ".wmv" or ".ts" => true,
+                    ".mp4" or ".m4v" or ".mov" or ".mkv" or ".wmv" or ".ts" or ".m2ts" or ".mts" or ".avi"  => true,
                     ".heic" or ".webp" or ".png" or ".jpg" or ".zip" or ".rar" or ".7z" or ".gif" => false
                 })
                 {
