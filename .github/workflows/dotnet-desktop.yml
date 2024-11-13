@@ -43,7 +43,8 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-
+  workflow_dispatch: # 手動トリガーの追加
+  
 jobs:
 
   build:
@@ -57,9 +58,9 @@ jobs:
 
     env:
      Solution_Name: ComicManager.sln
-     Test_Project_Path: ComicManager\ComicManager.csproj
+     Test_Project_Path: ComicManager\FileManager.csproj
      Wap_Project_Directory: ComicManager                    
-     Wap_Project_Path: ComicManager\ComicManager.csproj     # Replace with your WAP project path
+     Wap_Project_Path: ComicManager\FileManager.csproj     # Replace with your WAP project path
 
     steps:
     - name: Checkout
